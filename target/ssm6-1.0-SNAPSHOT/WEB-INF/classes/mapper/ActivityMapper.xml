@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zwj.dao.ActivityMapper">
+    
+    <resultMap id="ActivityResultMap" type="com.zwj.entity.Activity">
+        <id property="id" column="id"/>
+        <result property="clubId" column="club_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="activityTime" column="activity_time"/>
+        <result property="duration" column="duration"/>
+        <result property="location" column="location"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+    
+    <select id="findAll" resultMap="ActivityResultMap">
+        SELECT * FROM t_activity ORDER BY activity_time DESC
+    </select>
+    
+    <select id="findByClubId" resultMap="ActivityResultMap">
+        SELECT * FROM t_activity WHERE club_id = #{clubId} ORDER BY activity_time DESC
+    </select>
+    
+    <select id="findById" resultMap="ActivityResultMap">
+        SELECT * FROM t_activity WHERE id = #{id}
+    </select>
+    
+    <select id="searchActivities" resultMap="ActivityResultMap">
+        SELECT * FROM t_activity 
+        WHERE (title LIKE CONCAT('%', #{keyword}, '%') 
+               OR content LIKE CONCAT('%', #{keyword}, '%')
+               OR location LIKE CONCAT('%', #{keyword}, '%'))
+        <if test="clubId != null">
+            AND club_id = #{clubId}
+        </if>
+        ORDER BY activity_time DESC
+    </select>
+    
+    <insert id="insert" parameterType="com.zwj.entity.Activity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_activity(club_id, title, content, activity_time, duration, location, create_time)
+        VALUES(#{clubId}, #{title}, #{content}, #{activityTime}, #{duration}, #{location}, NOW())
+    </insert>
+    
+    <update id="update" parameterType="com.zwj.entity.Activity">
+        UPDATE t_activity SET 
+            club_id = #{clubId},
+            title = #{title},
+            content = #{content},
+            activity_time = #{activityTime},
+            duration = #{duration},
+            location = #{location}
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM t_activity WHERE id = #{id}
+    </delete>
+    
+</mapper>

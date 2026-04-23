@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zwj.dao.UserMapper">
+    
+    <resultMap id="UserResultMap" type="com.zwj.entity.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="role" column="role"/>
+        <result property="name" column="name"/>
+        <result property="clubId" column="club_id"/>
+    </resultMap>
+    
+    <select id="login" resultMap="UserResultMap">
+        SELECT * FROM t_user WHERE username = #{username} AND password = #{password} AND role = #{role}
+    </select>
+    
+    <select id="findById" resultMap="UserResultMap">
+        SELECT * FROM t_user WHERE id = #{id}
+    </select>
+    
+    <select id="findAll" resultMap="UserResultMap">
+        SELECT * FROM t_user
+    </select>
+    
+    <insert id="insert" parameterType="com.zwj.entity.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_user(username, password, role, name, club_id)
+        VALUES(#{username}, #{password}, #{role}, #{name}, #{clubId})
+    </insert>
+    
+    <update id="update" parameterType="com.zwj.entity.User">
+        UPDATE t_user SET 
+            username = #{username},
+            password = #{password},
+            role = #{role},
+            name = #{name},
+            club_id = #{clubId}
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM t_user WHERE id = #{id}
+    </delete>
+    
+    <select id="findByClubId" resultMap="UserResultMap">
+        SELECT * FROM t_user WHERE club_id = #{clubId}
+    </select>
+    
+</mapper>
