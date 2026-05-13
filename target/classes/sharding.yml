@@ -1,0 +1,47 @@
+dataSources:
+  ds0:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: jdbc:mysql://localhost:3306/z666?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+
+rules:
+  - !SHARDING
+    tables:
+      t_app:
+        actualDataNodes: ds0.t_app_$->{0..1}
+        tableStrategy:
+          standard:
+            shardingColumn: app_id
+            shardingAlgorithmName: app_id_mod
+      
+      t_question:
+        actualDataNodes: ds0.t_question_$->{0..1}
+        tableStrategy:
+          standard:
+            shardingColumn: app_id
+            shardingAlgorithmName: app_id_mod
+      
+      t_user_answer:
+        actualDataNodes: ds0.t_user_answer_$->{0..1}
+        tableStrategy:
+          standard:
+            shardingColumn: app_id
+            shardingAlgorithmName: app_id_mod
+      
+      t_answer_detail:
+        actualDataNodes: ds0.t_answer_detail_$->{0..1}
+        tableStrategy:
+          standard:
+            shardingColumn: app_id
+            shardingAlgorithmName: app_id_mod
+    
+    shardingAlgorithms:
+      app_id_mod:
+        type: MOD
+        props:
+          sharding-count: 2
+
+props:
+  sql-show: true

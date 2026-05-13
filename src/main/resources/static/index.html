@@ -1,0 +1,5005 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能答题平台</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info span {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .auth-buttons {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav {
+            display: flex;
+            background: #f8f9fa;
+            padding: 0 30px;
+            border-bottom: 2px solid #e9ecef;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 20px;
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: #667eea;
+            cursor: default;
+            user-select: none;
+            margin-right: 20px;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-logo-icon {
+            font-size: 28px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .nav-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #495057;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 3px solid transparent;
+            position: relative;
+            border-radius: 8px 8px 0 0;
+            font-size: 15px;
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .nav-item:hover {
+            color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .nav-item:hover::after {
+            width: 60%;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: white;
+            font-weight: 600;
+        }
+
+        .nav-item.active::after {
+            width: 100%;
+        }
+
+        .content {
+            padding: 40px;
+            min-height: 600px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+        }
+
+        .page {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 500;
+            color: #6c757d;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            padding: 0 4px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus,
+        .form-group input:not(:placeholder-shown),
+        .form-group textarea:not(:placeholder-shown),
+        .form-group select:not(:placeholder-shown) {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-group input:focus + label,
+        .form-group textarea:focus + label,
+        .form-group select:focus + label,
+        .form-group input:not(:placeholder-shown) + label,
+        .form-group textarea:not(:placeholder-shown) + label,
+        .form-group select:not(:placeholder-shown) + label {
+            top: 0;
+            font-size: 12px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .form-group input:hover,
+        .form-group textarea:hover,
+        .form-group select:hover {
+            border-color: #adb5bd;
+        }
+
+        .form-group.error input,
+        .form-group.error textarea,
+        .form-group.error select {
+            border-color: #dc3545;
+            animation: shake 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-group.error label {
+            color: #dc3545;
+        }
+
+        .form-group .error-message {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+            animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            white-space: nowrap;
+            user-select: none;
+            letter-spacing: 0.5px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn:active::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+            filter: grayscale(100%);
+        }
+
+        .btn:disabled:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn.loading {
+            pointer-events: none;
+            position: relative;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn-lg {
+            padding: 18px 36px;
+            font-size: 18px;
+            border-radius: 16px;
+        }
+
+        .btn-sm {
+            padding: 10px 20px;
+            font-size: 13px;
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.5);
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5);
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.5);
+            background: #c82333;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: #dee2e6;
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .app-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .app-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .app-card:hover::before {
+            opacity: 1;
+        }
+
+        .app-card h4 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .app-card p {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .app-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.02) 0%, rgba(118, 75, 162, 0.02) 100%);
+            opacity: 0;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .question-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            border-color: #667eea;
+        }
+
+        .question-item:hover::before {
+            opacity: 1;
+        }
+
+        .question-text {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 18px;
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 14px 18px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: scaleY(0);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px 0 0 2px;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            transform: translateX(6px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .option:hover::before {
+            transform: scaleY(1);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .option.selected::before {
+            transform: scaleY(1);
+        }
+
+        .option.selected::after {
+            content: '✓';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #667eea;
+            animation: checkmark 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes checkmark {
+            0% {
+                opacity: 0;
+                transform: translateY(-50%) scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(-50%) scale(1);
+            }
+        }
+
+        .text-answer {
+            margin-top: 15px;
+        }
+
+        .text-answer textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+        }
+
+        .text-answer textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .text-answer textarea:hover {
+            border-color: #adb5bd;
+        }
+
+        .question-item.wrong-answer {
+            border-left: 5px solid #dc3545;
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.03) 0%, rgba(220, 53, 69, 0.03) 100%);
+        }
+
+        .btn-expand {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 10px;
+        }
+
+        .btn-expand:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.05) 0%, rgba(32, 201, 151, 0.05) 100%);
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .explanation.hidden {
+            display: none;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #dee2e6;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .ai-typing {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #495057;
+            white-space: pre-wrap;
+        }
+
+        .ai-typing::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-score {
+            font-size: 56px;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            padding: 30px;
+            border-radius: 16px;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-score::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .ai-typing {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #495057;
+            min-height: 100px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            position: relative;
+        }
+
+        .ai-typing::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+            color: #667eea;
+        }
+
+        .ai-typing.completed::after {
+            content: '';
+            animation: none;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .chart-box {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-box h4 {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toast:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #495057;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            transform: translateX(-100%);
+            animation: shimmer 2s infinite;
+        }
+
+        .progress-text {
+            position: absolute;
+            right: 0;
+            top: -25px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .progress-fill.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .progress-fill.warning {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        }
+
+        .progress-fill.danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* 新手引导样式 */
+        .guide-modal {
+            z-index: 1000;
+        }
+
+        .guide-content {
+            max-width: 500px;
+            width: 90%;
+            border-radius: 20px;
+            overflow: hidden;
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .guide-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: relative;
+        }
+
+        .guide-icon {
+            font-size: 28px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .guide-header h3 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .guide-close {
+            position: absolute;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .guide-close:hover {
+            opacity: 1;
+        }
+
+        .guide-body {
+            padding: 30px 24px;
+        }
+
+        .guide-progress {
+            margin-bottom: 24px;
+        }
+
+        .guide-progress-bar {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .guide-progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .guide-step-info {
+            font-size: 14px;
+            color: #6c757d;
+            display: block;
+            text-align: right;
+        }
+
+        .guide-step-content {
+            text-align: center;
+        }
+
+        .guide-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+
+        .guide-description {
+            font-size: 15px;
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .guide-image {
+            font-size: 80px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .guide-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 20px 24px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        /* 操作提示样式 */
+        .tip-tooltip {
+            position: fixed;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 16px 20px;
+            max-width: 300px;
+            z-index: 999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tip-arrow {
+            position: absolute;
+            bottom: -8px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid white;
+        }
+
+        .tip-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .tip-desc {
+            font-size: 13px;
+            color: #6c757d;
+            line-height: 1.5;
+        }
+
+        /* 页脚样式 */
+        .footer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            margin-top: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .footer-logo-icon {
+            font-size: 32px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .footer-logo-text {
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .footer-info {
+            text-align: center;
+            flex: 1;
+        }
+
+        .footer-info p {
+            margin: 5px 0;
+            opacity: 0.95;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer-copyright {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 10px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 14px;
+        }
+
+        .footer-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        /* 欢迎界面样式 */
+        .welcome-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .welcome-container.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+
+        .welcome-content {
+            text-align: center;
+            color: white;
+        }
+
+        .welcome-title {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: bounceIn 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .welcome-subtitle {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            animation: fadeIn 2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+            opacity: 0;
+        }
+
+        .welcome-btn {
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 2s cubic-bezier(0.4, 0, 0.2, 1) 1s forwards;
+            opacity: 0;
+        }
+
+        .welcome-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            background: white;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-btn:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .welcome-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* 表格样式 */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .data-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .data-table tbody tr:hover {
+            background: #f8f9fa;
+            transform: scale(1.01);
+        }
+
+        .data-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .data-table td {
+            padding: 15px;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow: hidden;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px) scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 28px;
+            line-height: 1;
+            padding: 0 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .zoom-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1;
+            padding: 5px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 30px;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            max-height: calc(90vh - 80px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 欢迎界面 -->
+    <div id="welcome-screen" class="welcome-container">
+        <div class="welcome-content">
+            <div class="welcome-icon">🎯</div>
+            <h1 class="welcome-title">AI智能答题平台</h1>
+            <p class="welcome-subtitle">基于AI的智能答题应用创建与管理平台</p>
+            <button class="welcome-btn" onclick="enterMainApp()">进入平台</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>🎯 AI智能答题平台</h1>
+                <p>基于AI的智能答题应用创建与管理平台</p>
+                <div id="user-info" class="user-info hidden">
+                    <span id="user-nickname"></span>
+                    <button class="btn btn-small btn-secondary" onclick="logout()">退出登录</button>
+                </div>
+                <div id="auth-buttons" class="auth-buttons">
+                    <button class="btn btn-small btn-secondary" onclick="navigateTo('login')">登录</button>
+                    <button class="btn btn-small btn-primary" onclick="navigateTo('register')">注册</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav">
+            <div class="nav-logo">
+                <span class="nav-logo-icon">🍟</span>
+                <span>整点薯条7</span>
+            </div>
+            <div class="nav-item active" data-page="home">首页</div>
+            <div class="nav-item" data-page="apps">应用列表</div>
+            <div class="nav-item" data-page="create">创建应用</div>
+            <div class="nav-item" data-page="ai-generate">AI生成</div>
+            <div class="nav-item" data-page="statistics">统计分析</div>
+            <div class="nav-item" data-page="question-bank">题库管理</div>
+            <div class="nav-item" data-page="profile">个人中心</div>
+            <div class="nav-item" data-page="audit">审核管理</div>
+            <div class="nav-item" data-page="share">分享管理</div>
+            <div class="nav-item" data-page="my-apps">我的应用</div>
+        </div>
+
+        <div class="content">
+            <div id="page-login" class="page">
+                <div class="card" style="max-width: 400px; margin: 0 auto;">
+                    <h3>用户登录</h3>
+                    <div class="form-group">
+                        <input type="text" id="login-username" placeholder="请输入用户名" required>
+                        <label>用户名</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="login-password" placeholder="请输入密码" required>
+                        <label>密码</label>
+                    </div>
+                    <button class="btn btn-primary" onclick="login()">登录</button>
+                    <p style="margin-top: 15px; text-align: center;">
+                        还没有账号？<a href="#" onclick="navigateTo('register')">立即注册</a>
+                    </p>
+                </div>
+            </div>
+
+            <div id="page-register" class="page">
+                <div class="card" style="max-width: 400px; margin: 0 auto;">
+                    <h3>用户注册</h3>
+                    <div class="form-group">
+                        <input type="text" id="register-username" placeholder="请输入用户名" required>
+                        <label>用户名</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="register-password" placeholder="请输入密码" required>
+                        <label>密码</label>
+                    </div>
+                    <div class="form-group">
+                        <label>确认密码</label>
+                        <input type="password" id="register-confirm-password" placeholder="请再次输入密码">
+                    </div>
+                    <div class="form-group">
+                        <label>昵称</label>
+                        <input type="text" id="register-nickname" placeholder="请输入昵称">
+                    </div>
+                    <div class="form-group">
+                        <label>邮箱</label>
+                        <input type="email" id="register-email" placeholder="请输入邮箱">
+                    </div>
+                    <div class="form-group">
+                        <label>手机号</label>
+                        <input type="tel" id="register-phone" placeholder="请输入手机号">
+                    </div>
+                    <button class="btn btn-primary" onclick="register()">注册</button>
+                    <p style="margin-top: 15px; text-align: center;">
+                        已有账号？<a href="#" onclick="navigateTo('login')">立即登录</a>
+                    </p>
+                </div>
+            </div>
+
+            <div id="page-home" class="page active">
+                <div class="card">
+                    <h3>欢迎使用AI智能答题平台</h3>
+                    <p style="margin-bottom: 20px;">这是一个基于AI的智能答题应用创建与管理平台，您可以：</p>
+                    <ul style="margin-left: 20px; line-height: 2;">
+                        <li>创建多种类型的答题应用（MBTI测试、问卷调查、知识问答等）</li>
+                        <li>使用AI自动生成题目，快速创建内容</li>
+                        <li>AI智能评分，提供个性化评语</li>
+                        <li>查看详细的统计分析数据</li>
+                        <li>分享您的应用给其他人使用</li>
+                    </ul>
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="navigateTo('create')">立即创建应用</button>
+                        <button class="btn btn-secondary" onclick="navigateTo('apps')">浏览应用</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>热门应用</h3>
+                    <div id="hot-apps" class="app-grid">
+                        <div class="loading">加载中...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-apps" class="page">
+                <div class="card">
+                    <h3>应用列表</h3>
+                    <div class="form-group">
+                        <input type="text" id="search-keyword" placeholder="搜索应用..." onkeyup="searchApps()">
+                    </div>
+                    <div id="app-list" class="app-grid">
+                        <div class="loading">加载中...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-create" class="page">
+                <div class="card">
+                    <h3>创建答题应用</h3>
+                    <div class="form-group">
+                        <label>应用标题</label>
+                        <input type="text" id="app-title" placeholder="请输入应用标题">
+                    </div>
+                    <div class="form-group">
+                        <label>应用描述</label>
+                        <textarea id="app-description" rows="3" placeholder="请输入应用描述"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>应用类型</label>
+                        <select id="app-type">
+                            <option value="mbti">MBTI性格测试</option>
+                            <option value="survey">问卷调查</option>
+                            <option value="quiz">知识问答</option>
+                            <option value="custom">自定义</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="createApp()">创建应用</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit()" id="cancel-edit-btn" style="display: none;">取消编辑</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-ai-generate" class="page">
+                <div class="card">
+                    <h3>AI生成题目</h3>
+                    <div class="form-group">
+                        <label>选择应用</label>
+                        <select id="ai-app-select">
+                            <option value="">请选择应用</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>主题</label>
+                        <input type="text" id="ai-topic" placeholder="例如：JavaScript基础知识">
+                    </div>
+                    <div class="form-group">
+                        <label>题目数量</label>
+                        <input type="number" id="ai-question-count" value="10" min="1" max="50">
+                    </div>
+                    <div class="form-group">
+                        <!-- <label>题目类型</label> -->
+                        <div id="question-type-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                                <input type="checkbox" id="qtype-single" value="single" onchange="updateQuestionTypeRatios()" style="width: 18px; height: 18px; cursor: pointer;">
+                                <label for="qtype-single" style="white-space: nowrap; cursor: pointer; flex: 1; margin: 0;">单选题</label>
+                                <input type="number" id="ratio-single" value="100" min="1" max="100" style="width: 60px; padding: 5px; border: 1px solid #ced4da; border-radius: 4px; display: none;">
+                                <span style="margin-left: 5px; display: none; color: #6c757d;">%</span>单选题
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                                <input type="checkbox" id="qtype-multiple" value="multiple" onchange="updateQuestionTypeRatios()" style="width: 18px; height: 18px; cursor: pointer;">
+                                <label for="qtype-multiple" style="white-space: nowrap; cursor: pointer; flex: 1; margin: 0;">多选题</label>
+                                <input type="number" id="ratio-multiple" value="100" min="1" max="100" style="width: 60px; padding: 5px; border: 1px solid #ced4da; border-radius: 4px; display: none;">
+                                <span style="margin-left: 5px; display: none; color: #6c757d;">%</span>多选题
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                                <input type="checkbox" id="qtype-judgment" value="judgment" onchange="updateQuestionTypeRatios()" style="width: 18px; height: 18px; cursor: pointer;">
+                                <label for="qtype-judgment" style="white-space: nowrap; cursor: pointer; flex: 1; margin: 0;">判断题</label>
+                                <input type="number" id="ratio-judgment" value="100" min="1" max="100" style="width: 60px; padding: 5px; border: 1px solid #ced4da; border-radius: 4px; display: none;">
+                                <span style="margin-left: 5px; display: none; color: #6c757d;">%</span>判断题
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                                <input type="checkbox" id="qtype-text" value="text" onchange="updateQuestionTypeRatios()" style="width: 18px; height: 18px; cursor: pointer;">
+                                <label for="qtype-text" style="white-space: nowrap; cursor: pointer; flex: 1; margin: 0;">简答题</label>
+                                <input type="number" id="ratio-text" value="100" min="1" max="100" style="width: 60px; padding: 5px; border: 1px solid #ced4da; border-radius: 4px; display: none;">
+                                <span style="margin-left: 5px; display: none; color: #6c757d;">%</span>简答题
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>难度</label>
+                        <select id="ai-difficulty">
+                            <option value="easy">简单</option>
+                            <option value="medium" selected>中等</option>
+                            <option value="hard">困难</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="generateQuestions()">开始生成</button>
+                </div>
+
+                <div id="ai-progress" class="card hidden">
+                    <h3>生成进度</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text" id="progress-percent">0%</div>
+                    <p id="progress-text">准备中...</p>
+                    <div id="generated-questions"></div>
+                </div>
+            </div>
+
+            <div id="page-statistics" class="page">
+                <div class="card">
+                    <h3>统计分析</h3>
+                    <div class="form-group">
+                        <label>选择应用</label>
+                        <select id="stats-app-select" onchange="loadStatistics()">
+                            <option value="">请选择应用</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success" onclick="exportStatistics()" style="margin-top: 15px;">📊 导出Excel报告</button>
+                </div>
+
+                <div id="statistics-content" class="hidden">
+                    <div class="result-card">
+                        <h3>应用统计概览</h3>
+                        <div class="app-stats" style="font-size: 16px; margin-top: 20px;">
+                            <div>浏览次数: <strong id="stat-view-count">0</strong></div>
+                            <div>答题次数: <strong id="stat-answer-count">0</strong></div>
+                            <div>分享次数: <strong id="stat-share-count">0</strong></div>
+                            <div>平均分数: <strong id="stat-avg-score">0</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="charts-container">
+                        <div class="chart-box">
+                            <h4>趋势分析</h4>
+                            <div id="trend-chart" style="height: 300px;"></div>
+                        </div>
+                        <div class="chart-box">
+                            <h4>维度分布</h4>
+                            <div id="dimension-chart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- 高级分析功能 -->
+                    <div style="margin-top: 30px;">
+                        <div class="card">
+                            <h3>高级分析</h3>
+                            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                                <button class="btn btn-primary" onclick="loadBehaviorAnalysis()">用户行为分析</button>
+                                <button class="btn btn-primary" onclick="loadDifficultyAnalysis()">题目难度分析</button>
+                                <button class="btn btn-primary" onclick="loadKnowledgeAnalysis()">知识点分析</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="behavior-analysis" style="margin-top: 30px;">
+                        <!-- 用户行为分析内容将动态加载 -->
+                    </div>
+
+                    <div id="difficulty-analysis" style="margin-top: 30px;">
+                        <!-- 题目难度分析内容将动态加载 -->
+                    </div>
+
+                    <div id="knowledge-analysis" style="margin-top: 30px;">
+                        <!-- 知识点分析内容将动态加载 -->
+                    </div>
+
+                    <div class="card" style="margin-top: 30px;">
+                        <h3>历史答题记录</h3>
+                        <div class="form-group">
+                            <input type="text" id="history-search-input" placeholder="输入用户名或答题ID搜索">
+                            <button class="btn btn-primary" onclick="searchHistoryAnswers()">搜索</button>
+                            <button class="btn btn-secondary" onclick="resetHistorySearch()">重置</button>
+                        </div>
+                        <div id="history-answers-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>答题ID</th>
+                                        <th>用户ID</th>
+                                        <th>分数</th>
+                                        <th>答题时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-answers-tbody">
+                                    <tr><td colspan="5" style="text-align: center;">暂无数据</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-audit" class="page">
+                <div class="card">
+                    <h3>审核管理</h3>
+                    <div class="form-group">
+                        <label>审核状态</label>
+                        <select id="audit-status-filter" onchange="loadAuditApps()">
+                            <option value="0">待审核</option>
+                            <option value="1">已通过</option>
+                            <option value="2">已拒绝</option>
+                        </select>
+                    </div>
+                    <div id="audit-list">
+                        <div class="loading">加载中...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-share" class="page">
+                <div class="card">
+                    <h3>分享管理</h3>
+                    <div class="form-group">
+                        <label>选择应用</label>
+                        <select id="share-app-select">
+                            <option value="">请选择应用</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="createShare()">创建分享链接</button>
+                </div>
+                <div id="share-result" class="card hidden">
+                    <h3>分享链接</h3>
+                    <div class="form-group">
+                        <label>分享码</label>
+                        <input type="text" id="share-code" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>分享链接</label>
+                        <input type="text" id="share-url" readonly>
+                    </div>
+                    <button class="btn btn-secondary" onclick="copyShareUrl()">复制链接</button>
+                </div>
+            </div>
+
+            <div id="page-my-apps" class="page">
+                <div class="card">
+                    <h3>我的应用</h3>
+                    <div id="my-apps-list">
+                        <div class="loading">加载中...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-profile" class="page">
+                <div class="card">
+                    <h3>个人资料</h3>
+                    <div id="profile-info">
+                        <div class="loading">加载中...</div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <h3>修改资料</h3>
+                    <div class="form-group">
+                        <label>昵称</label>
+                        <input type="text" id="profile-nickname" placeholder="请输入昵称">
+                    </div>
+                    <div class="form-group">
+                        <label>邮箱</label>
+                        <input type="email" id="profile-email" placeholder="请输入邮箱">
+                    </div>
+                    <div class="form-group">
+                        <label>手机号</label>
+                        <input type="tel" id="profile-phone" placeholder="请输入手机号">
+                    </div>
+                    <button class="btn btn-primary" onclick="updateProfile()">保存修改</button>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <h3>修改密码</h3>
+                    <div class="form-group">
+                        <label>原密码</label>
+                        <input type="password" id="profile-old-password" placeholder="请输入原密码">
+                    </div>
+                    <div class="form-group">
+                        <label>新密码</label>
+                        <input type="password" id="profile-new-password" placeholder="请输入新密码">
+                    </div>
+                    <button class="btn btn-primary" onclick="changePassword()">修改密码</button>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <h3>答题统计</h3>
+                    <div id="profile-statistics">
+                        <div class="loading">加载中...</div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <h3>成就系统</h3>
+                    <div id="profile-achievements">
+                        <div class="loading">加载中...</div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <h3>答题历史</h3>
+                    <div id="profile-history">
+                        <div class="loading">加载中...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-question-bank" class="page">
+                <div class="card">
+                    <h3>题库管理</h3>
+                    <div class="form-group">
+                        <label>选择应用</label>
+                        <select id="qb-app-select" onchange="loadQuestionsForBank()">
+                            <option value="">请选择应用</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="showAddQuestionModal()">添加题目</button>
+                </div>
+
+                <div id="question-list" class="card" style="margin-top: 30px;">
+                    <h3>题目列表</h3>
+                    <div id="questions-table-container">
+                        <div class="loading">请先选择应用</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="question-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="question-modal-title">添加题目</h3>
+                        <span class="close" onclick="closeQuestionModal()">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="question-id">
+                        <div class="form-group">
+                            <label>题目内容</label>
+                            <textarea id="question-text" rows="3" placeholder="请输入题目内容"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>题目类型</label>
+                            <select id="question-type">
+                                <option value="single">单选题</option>
+                                <option value="multiple">多选题</option>
+                                <option value="judgment">判断题</option>
+                                <option value="text">简答题</option>
+                            </select>
+                        </div>
+                        <div id="question-options-container">
+                            <div class="form-group">
+                                <label>选项A</label>
+                                <input type="text" id="option-a" placeholder="选项A内容">
+                            </div>
+                            <div class="form-group">
+                                <label>选项B</label>
+                                <input type="text" id="option-b" placeholder="选项B内容">
+                            </div>
+                            <div class="form-group">
+                                <label>选项C</label>
+                                <input type="text" id="option-c" placeholder="选项C内容">
+                            </div>
+                            <div class="form-group">
+                                <label>选项D</label>
+                                <input type="text" id="option-d" placeholder="选项D内容">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>正确答案</label>
+                            <input type="text" id="question-answer" placeholder="例如：A 或 AB">
+                        </div>
+                        <div class="form-group">
+                            <label>分值</label>
+                            <input type="number" id="question-score" value="10" min="1" max="100">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeQuestionModal()">取消</button>
+                        <button class="btn btn-primary" onclick="saveQuestion()">保存</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-answer" class="page">
+                <div class="card">
+                    <h3 id="answer-app-title">答题</h3>
+                    <div id="questions-container"></div>
+                    <button class="btn btn-primary" onclick="submitAnswer()">提交答案</button>
+                </div>
+            </div>
+
+            <div id="page-result" class="page">
+                <div class="result-card">
+                    <h3>答题结果</h3>
+                    <div class="result-score" id="result-score">0</div>
+                    <div id="ai-comment-container">
+                        <h4>AI评语</h4>
+                        <div class="ai-typing" id="ai-comment"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>答题详情</h3>
+                    <div id="answer-details"></div>
+                </div>
+
+                <div class="card">
+                    <h3>分享</h3>
+                    <button class="btn btn-primary" onclick="shareResult()">分享结果</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:8085/api';
+        let currentAppId = null;
+        let currentQuestions = [];
+        let currentAnswers = {};
+        let currentUserId = null;
+        let currentAnswerId = null;
+        let currentUser = null;
+        let authToken = null;
+        let guideCurrentStep = 1;
+        let guideSteps = [
+            { title: '欢迎使用AI智能答题系统', desc: '这是一个强大的智能答题平台，让AI帮您创建题目并自动批改！', icon: '🎯' },
+            { title: '创建您的第一个应用', desc: '点击导航栏的"应用管理"，创建您的答题应用，设置应用名称和描述。', icon: '📱' },
+            { title: '开始答题之旅', desc: '选择一个应用，点击开始答题，体验AI自动评分和智能评语功能！', icon: '🚀' }
+        ];
+
+        function enterMainApp() {
+            const welcomeScreen = document.getElementById('welcome-screen');
+            welcomeScreen.classList.add('hidden');
+            setTimeout(() => {
+                welcomeScreen.style.display = 'none';
+            }, 1000);
+            checkLoginStatus();
+        }
+
+        function checkLoginStatus() {
+            const token = localStorage.getItem('authToken');
+            const user = localStorage.getItem('currentUser');
+            
+            if (token && user) {
+                authToken = token;
+                currentUser = JSON.parse(user);
+                currentUserId = currentUser.id;
+                
+                document.getElementById('user-info').classList.remove('hidden');
+                document.getElementById('auth-buttons').classList.add('hidden');
+                document.getElementById('user-nickname').textContent = currentUser.nickname || currentUser.username;
+            } else {
+                document.getElementById('user-info').classList.add('hidden');
+                document.getElementById('auth-buttons').classList.remove('hidden');
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!username || !password) {
+                showToast('请输入用户名和密码', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/user/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    authToken = result.data.token;
+                    currentUser = result.data;
+                    currentUserId = currentUser.id;
+                    
+                    localStorage.setItem('authToken', authToken);
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    
+                    checkLoginStatus();
+                    showToast('登录成功');
+                    navigateTo('home');
+                } else {
+                    showToast(result.message || '登录失败', 'error');
+                }
+            } catch (error) {
+                console.error('登录失败', error);
+                showToast('登录失败，请重试', 'error');
+            }
+        }
+
+        async function register() {
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const nickname = document.getElementById('register-nickname').value;
+            const email = document.getElementById('register-email').value;
+            const phone = document.getElementById('register-phone').value;
+            
+            if (!username || !password || !nickname) {
+                showToast('请填写必填项', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showToast('两次密码输入不一致', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/user/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password, nickname, email, phone })
+                });
+                
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    showToast('注册成功，请登录');
+                    navigateTo('login');
+                } else {
+                    showToast(result.message || '注册失败', 'error');
+                }
+            } catch (error) {
+                console.error('注册失败', error);
+                showToast('注册失败，请重试', 'error');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            authToken = null;
+            currentUser = null;
+            currentUserId = null;
+            
+            checkLoginStatus();
+            showToast('已退出登录');
+            navigateTo('login');
+        }
+
+        async function loadAuditApps() {
+            const status = document.getElementById('audit-status-filter').value;
+            let url;
+            
+            if (status === '0') {
+                url = `${API_BASE}/audit/pending`;
+            } else if (status === '1') {
+                url = `${API_BASE}/audit/approved`;
+            } else {
+                url = `${API_BASE}/audit/rejected`;
+            }
+            
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    renderAuditApps(result.data);
+                } else {
+                    showToast(result.message || '加载失败', 'error');
+                }
+            } catch (error) {
+                console.error('加载审核应用失败', error);
+                showToast('加载失败', 'error');
+            }
+        }
+
+        function renderAuditApps(apps) {
+            const container = document.getElementById('audit-list');
+            
+            if (apps.length === 0) {
+                container.innerHTML = '<p>暂无应用</p>';
+                return;
+            }
+            
+            container.innerHTML = apps.map(app => `
+                <div class="app-card">
+                    <h4>${app.title}</h4>
+                    <p>${app.description || '暂无描述'}</p>
+                    <p>状态: ${getStatusText(app.status)}</p>
+                    <p>创建时间: ${app.createTime}</p>
+                    ${app.status === 0 ? `
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label>审核意见</label>
+                            <textarea id="audit-comment-${app.appId}" placeholder="请输入审核意见"></textarea>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <button class="btn btn-primary" onclick="auditApp('${app.appId}', 1)">通过</button>
+                            <button class="btn btn-secondary" onclick="auditApp('${app.appId}', 2)">拒绝</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 0: return '待审核';
+                case 1: return '已通过';
+                case 2: return '已拒绝';
+                default: return '未知';
+            }
+        }
+
+        async function auditApp(appId, auditStatus) {
+            const comment = document.getElementById(`audit-comment-${appId}`).value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/audit/app`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        appId,
+                        auditStatus,
+                        auditComment: comment
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    showToast('审核完成');
+                    loadAuditApps();
+                } else {
+                    showToast(result.message || '审核失败', 'error');
+                }
+            } catch (error) {
+                console.error('审核失败', error);
+                showToast('审核失败，请重试', 'error');
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function navigateTo(page) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === page) {
+                    item.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${page}`).classList.add('active');
+
+            if (page === 'apps') {
+                loadApps();
+            } else if (page === 'home') {
+                loadHotApps();
+            } else if (page === 'ai-generate') {
+                loadAppsForSelect();
+            } else if (page === 'statistics') {
+                loadAppsForStats();
+            } else if (page === 'audit') {
+                loadAuditApps();
+            } else if (page === 'share') {
+                loadAppsForShare();
+            } else if (page === 'my-apps') {
+                loadMyApps();
+            }
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.dataset.page) navigateTo(item.dataset.page);
+            });
+        });
+
+        async function loadHotApps() {
+            try {
+                const response = await fetch(`${API_BASE}/app/published?pageNum=1&pageSize=6`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    renderApps(result.data.records, 'hot-apps');
+                }
+            } catch (error) {
+                console.error('加载热门应用失败', error);
+                document.getElementById('hot-apps').innerHTML = '<p>加载失败</p>';
+            }
+        }
+
+               async function loadApps() {
+            try {
+                const response = await fetch(`${API_BASE}/app/published?pageNum=1&pageSize=20`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    renderApps(result.data.records, 'app-list');
+                }
+            } catch (error) {
+                console.error('加载应用列表失败', error);
+                document.getElementById('app-list').innerHTML = '<p>加载失败</p>';
+            }
+        }
+
+        function renderApps(apps, containerId) {
+            const container = document.getElementById(containerId);
+            if (apps.length === 0) {
+                container.innerHTML = '<p>暂无应用</p>';
+                return;
+            }
+
+            container.innerHTML = apps.map(app => `
+                <div class="app-card" onclick="startAnswer('${app.appId}')">
+                    <h4>${app.title}</h4>
+                    <p>${app.description || '暂无描述'}</p>
+                    <div class="app-stats">
+                        <span>👁️ ${app.viewCount}</span>
+                        <span>✏️ ${app.answerCount}</span>
+                        <span>🔗 ${app.shareCount}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function createApp() {
+            const title = document.getElementById('app-title').value;
+            const description = document.getElementById('app-description').value;
+            const type = document.getElementById('app-type').value;
+
+            if (!title) {
+                showToast('请输入应用标题', 'error');
+                return;
+            }
+
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            if (currentAppId) {
+                await updateApp();
+            } else {
+                try {
+                    const response = await fetch(`${API_BASE}/app/create`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify({ title, description, type })
+                    });
+                    const result = await response.json();
+                    if (result.code === 200) {
+                        showToast('应用创建成功，等待审核');
+                        navigateTo('my-apps');
+                    } else {
+                        showToast(result.message, 'error');
+                    }
+                } catch (error) {
+                    console.error('创建应用失败', error);
+                    showToast('创建失败', 'error');
+                }
+            }
+        }
+
+        async function loadAppsForSelect() {
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/app/user/${currentUserId}?pageNum=1&pageSize=100`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    const select = document.getElementById('ai-app-select');
+                    select.innerHTML = '<option value="">请选择应用</option>' +
+                        result.data.records.map(app => `<option value="${app.appId}">${app.title}</option>`).join('');
+                }
+            } catch (error) {
+                console.error('加载应用列表失败', error);
+            }
+        }
+
+        function generateQuestions() {
+            const appId = document.getElementById('ai-app-select').value;
+            const topic = document.getElementById('ai-topic').value;
+            const questionCount = parseInt(document.getElementById('ai-question-count').value);
+            const difficulty = document.getElementById('ai-difficulty').value;
+
+            if (!appId || !topic) {
+                showToast('请选择应用并输入主题', 'error');
+                return;
+            }
+
+            const checkboxes = [
+                document.getElementById('qtype-single'),
+                document.getElementById('qtype-multiple'),
+                document.getElementById('qtype-judgment'),
+                document.getElementById('qtype-text')
+            ];
+            
+            const selectedTypes = checkboxes.filter(cb => cb.checked).map(cb => cb.value);
+            
+            if (selectedTypes.length === 0) {
+                showToast('请至少选择一种题目类型', 'error');
+                return;
+            }
+
+            if (selectedTypes.length > 1) {
+                let totalRatio = 0;
+                selectedTypes.forEach(type => {
+                    totalRatio += parseInt(document.getElementById(`ratio-${type}`).value);
+                });
+                if (totalRatio !== 100) {
+                    showToast(`当前百分比总和为${totalRatio}%，请调整为100%`, 'error');
+                    return;
+                }
+            }
+
+            const progressDiv = document.getElementById('ai-progress');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            const progressPercent = document.getElementById('progress-percent');
+            const generatedQuestions = document.getElementById('generated-questions');
+
+            progressDiv.classList.remove('hidden');
+            progressFill.style.width = '0%';
+            progressPercent.textContent = '0%';
+            progressText.textContent = '准备中...';
+            generatedQuestions.innerHTML = '';
+
+            let isCompleted = false;
+
+            // 先清除现有的题目，确保每次生成都是从空白开始
+            fetch(`${API_BASE}/ai/clear/questions?appId=${appId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).catch(error => {
+                console.error('清除题目失败:', error);
+            });
+
+            if (selectedTypes.length === 1) {
+                const questionType = selectedTypes[0];
+                const eventSource = new EventSource(
+                    `${API_BASE}/ai/generate/questions/stream?appId=${appId}&topic=${encodeURIComponent(topic)}&questionCount=${questionCount}&questionType=${questionType}&difficulty=${difficulty}`
+                );
+
+                eventSource.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+
+                if (data.type === 'start') {
+                    progressText.textContent = data.message;
+                } else if (data.type === 'question') {
+                    const progress = (data.index / data.total) * 100;
+                    progressFill.style.width = `${progress}%`;
+                    progressPercent.textContent = `${Math.round(progress)}%`;
+                    progressText.textContent = `正在生成第 ${data.index}/${data.total} 题...`;
+
+                    const question = data.data;
+                    let optionsHtml = '';
+                    if (question.questionType === 'text') {
+                        optionsHtml = `<div class="text-answer"><textarea placeholder="请输入你的答案..." rows="4" readonly></textarea></div>`;
+                    } else {
+                        const options = JSON.parse(question.options || '[]');
+                        optionsHtml = `
+                            <div class="options">
+                                ${options.map((opt, i) => `
+                                    <div class="option">${String.fromCharCode(65 + i)}. ${opt}</div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    generatedQuestions.innerHTML += `
+                        <div class="question-item">
+                            <div class="question-text">${data.index}. ${question.questionText} (${question.questionType === 'text' ? '简答题' : question.questionType === 'multiple' ? '多选题' : '单选题'})</div>
+                            ${optionsHtml}
+                        </div>
+                    `;
+                } else if (data.type === 'complete') {
+                    isCompleted = true;
+                    progressFill.style.width = '100%';
+                    progressPercent.textContent = '100%';
+                    progressFill.classList.add('success');
+                    progressText.textContent = data.message;
+                    showToast('题目生成完成');
+                    generatedQuestions.innerHTML += `
+                        <div class="question-complete-actions">
+                            <button class="btn btn-primary" onclick="startAnswer('${appId}')">开始答题</button>
+                            <button class="btn btn-secondary" onclick="navigateTo('my-apps')">查看我的应用</button>
+                        </div>
+                    `;
+                } else if (data.type === 'error') {
+                    progressText.textContent = '生成失败: ' + data.message;
+                    progressFill.classList.add('danger');
+                    showToast(data.message, 'error');
+                }
+            };
+
+            eventSource.onerror = () => {
+                eventSource.close();
+                if (!isCompleted) {
+                    progressFill.classList.add('danger');
+                    showToast('连接中断', 'error');
+                }
+            };
+
+                setTimeout(() => {
+                    eventSource.close();
+                }, 300000);
+            } else {
+                let totalGenerated = 0;
+                const totalQuestions = questionCount;
+                let currentTypeIndex = 0;
+
+                function generateNextType() {
+                    if (currentTypeIndex >= selectedTypes.length) {
+                        progressFill.style.width = '100%';
+                        progressText.textContent = '题目生成完成';
+                        showToast('题目生成完成');
+                        generatedQuestions.innerHTML += `
+                            <div class="question-complete-actions">
+                                <button class="btn btn-primary" onclick="startAnswer('${appId}')">开始答题</button>
+                                <button class="btn btn-secondary" onclick="navigateTo('my-apps')">查看我的应用</button>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    const questionType = selectedTypes[currentTypeIndex];
+                    const ratio = parseInt(document.getElementById(`ratio-${questionType}`).value);
+                    let typeQuestionCount = Math.round((ratio / 100) * totalQuestions);
+                    
+                    const remainingQuestions = totalQuestions - totalGenerated;
+                    if (currentTypeIndex === selectedTypes.length - 1) {
+                        typeQuestionCount = remainingQuestions;
+                    } else if (typeQuestionCount > remainingQuestions) {
+                        typeQuestionCount = remainingQuestions;
+                    }
+
+                    if (typeQuestionCount > 0) {
+                        progressText.textContent = `正在生成${questionType === 'text' ? '简答题' : questionType === 'multiple' ? '多选题' : questionType === 'judgment' ? '判断题' : '单选题'}...`;
+
+                        const eventSource = new EventSource(
+                            `${API_BASE}/ai/generate/questions/stream?appId=${appId}&topic=${encodeURIComponent(topic)}&questionCount=${typeQuestionCount}&questionType=${questionType}&difficulty=${difficulty}`
+                        );
+
+                        eventSource.onmessage = (event) => {
+                            const data = JSON.parse(event.data);
+
+                            if (data.type === 'question') {
+                                totalGenerated++;
+                                const progress = (totalGenerated / totalQuestions) * 100;
+                                progressFill.style.width = `${progress}%`;
+                                progressText.textContent = `正在生成第 ${totalGenerated}/${totalQuestions} 题...`;
+
+                                const question = data.data;
+                                let optionsHtml = '';
+                                if (question.questionType === 'text') {
+                                    optionsHtml = `<div class="text-answer"><textarea placeholder="请输入你的答案..." rows="4" readonly></textarea></div>`;
+                                } else {
+                                    const options = JSON.parse(question.options || '[]');
+                                    optionsHtml = `
+                                        <div class="options">
+                                            ${options.map((opt, i) => {
+                                                // 移除选项文本中可能包含的重复字母，只保留我们生成的字母
+                                                let cleanOpt = opt;
+                                                if (cleanOpt.startsWith(`${String.fromCharCode(65 + i)}.`)) {
+                                                    cleanOpt = cleanOpt.substring(`${String.fromCharCode(65 + i)}.`.length).trim();
+                                                }
+                                                return `
+                                                    <div class="option">${String.fromCharCode(65 + i)}. ${cleanOpt}</div>
+                                                `;
+                                            }).join('')}
+                                        </div>
+                                    `;
+                                }
+                                
+                                generatedQuestions.innerHTML += `
+                                    <div class="question-item">
+                                        <div class="question-text">${totalGenerated}. ${question.questionText} (${question.questionType === 'text' ? '简答题' : question.questionType === 'multiple' ? '多选题' : question.questionType === 'judgment' ? '判断题' : '单选题'})</div>
+                                        ${optionsHtml}
+                                    </div>
+                                `;
+                            } else if (data.type === 'complete') {
+                                clearTimeout(timeoutId);
+                                eventSource.close();
+                                currentTypeIndex++;
+                                generateNextType();
+                            } else if (data.type === 'error') {
+                                clearTimeout(timeoutId);
+                                progressFill.classList.add('danger');
+                                progressText.textContent = '生成失败: ' + data.message;
+                                showToast(data.message, 'error');
+                                eventSource.close();
+                                currentTypeIndex++;
+                                generateNextType();
+                            }
+                        };
+
+                        eventSource.onerror = () => {
+                            clearTimeout(timeoutId);
+                            progressFill.classList.add('danger');
+                            progressText.textContent = '连接中断';
+                            showToast('连接中断', 'error');
+                            eventSource.close();
+                            currentTypeIndex++;
+                            generateNextType();
+                        };
+                        
+                        let timeoutId = setTimeout(() => {
+                            clearTimeout(timeoutId);
+                            progressFill.classList.add('danger');
+                            progressText.textContent = '生成超时';
+                            showToast('生成超时，请重试', 'error');
+                            eventSource.close();
+                            currentTypeIndex++;
+                            generateNextType();
+                        }, 60000);
+                    } else {
+                        currentTypeIndex++;
+                        generateNextType();
+                    }
+                }
+
+                generateNextType();
+            }
+        }
+
+        async function startAnswer(appId) {
+            currentAppId = appId;
+            try {
+                const response = await fetch(`${API_BASE}/app/${appId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    const app = result.data;
+                    document.getElementById('answer-app-title').textContent = app.title;
+                    currentQuestions = app.questions || [];
+                    console.log('题目数据:', currentQuestions);
+                    renderQuestions();
+                    navigateTo('answer');
+                }
+            } catch (error) {
+                console.error('加载应用失败', error);
+                showToast('加载失败', 'error');
+            }
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = currentQuestions.map((q, index) => {
+                let options = [];
+                try {
+                    if (typeof q.options === 'string') {
+                        options = JSON.parse(q.options || '[]');
+                    } else if (Array.isArray(q.options)) {
+                        options = q.options;
+                    }
+                } catch (e) {
+                    console.error('解析选项失败:', e, q.options);
+                    options = [];
+                }
+                
+                console.log('题目 ' + (index + 1) + ' 类型: ' + q.questionType + ', 选项:', options);
+                
+                let optionsHtml = '';
+                if (q.questionType === 'text') {
+                    optionsHtml = '<div class="text-answer"><textarea id="answer-' + q.id + '" placeholder="请输入你的答案..." rows="4" oninput="updateTextAnswer(' + q.id + ', this.value)"></textarea></div>';
+                } else {
+                    const isMultiple = q.questionType === 'multiple';
+                    optionsHtml = '<div class="options">';
+                    for (let i = 0; i < options.length; i++) {
+                        let cleanOpt = options[i];
+                        if (cleanOpt.startsWith(String.fromCharCode(65 + i) + '.')) {
+                            cleanOpt = cleanOpt.substring(String.fromCharCode(65 + i) + '.'.length).trim();
+                        }
+                        optionsHtml += '<div class="option ' + (isMultiple ? 'multiple-option' : '') + '" onclick="selectOption(' + q.id + ', \'' + String.fromCharCode(65 + i) + '\', this, \'' + q.questionType + '\')">' + String.fromCharCode(65 + i) + '. ' + cleanOpt + '</div>';
+                    }
+                    optionsHtml += '</div>';
+                }
+                
+                let typeText = '单选题';
+                if (q.questionType === 'text') {
+                    typeText = '简答题';
+                } else if (q.questionType === 'multiple') {
+                    typeText = '多选题';
+                } else if (q.questionType === 'judgment') {
+                    typeText = '判断题';
+                }
+                
+                return '<div class="question-item"><div class="question-text">' + (index + 1) + '. ' + q.questionText + ' (' + typeText + ')</div>' + optionsHtml + '</div>';
+            }).join('');
+            currentAnswers = {};
+        }
+
+        function updateTextAnswer(questionId, value) {
+            currentAnswers[questionId] = value;
+        }
+
+        function selectOption(questionId, answer, element, questionType) {
+            if (questionType === 'multiple') {
+                const currentAnswer = currentAnswers[questionId] || '';
+                const answerArray = currentAnswer ? currentAnswer.split(',') : [];
+                
+                if (answerArray.includes(answer)) {
+                    const index = answerArray.indexOf(answer);
+                    answerArray.splice(index, 1);
+                    element.classList.remove('selected');
+                } else {
+                    answerArray.push(answer);
+                    element.classList.add('selected');
+                }
+                
+                currentAnswers[questionId] = answerArray.join(',');
+            } else {
+                currentAnswers[questionId] = answer;
+                const siblings = element.parentElement.querySelectorAll('.option');
+                siblings.forEach(opt => opt.classList.remove('selected'));
+                element.classList.add('selected');
+            }
+        }
+
+        async function submitAnswer() {
+            if (Object.keys(currentAnswers).length === 0) {
+                showToast('请先答题', 'error');
+                return;
+            }
+
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            const submitBtn = event.target;
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '提交中...';
+
+            const answers = Object.keys(currentAnswers).map(questionId => ({
+                questionId: parseInt(questionId),
+                userAnswer: currentAnswers[questionId]
+            }));
+
+            try {
+                const response = await fetch(`${API_BASE}/answer/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        appId: currentAppId,
+                        answers: answers,
+                        duration: 0
+                    })
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    currentAnswerId = result.data.answerId;
+                    showResult(result.data);
+                    generateAiComment(currentAppId, result.data.answerId);
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('提交答案失败', error);
+                showToast('提交失败', 'error');
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '提交答案';
+            }
+        }
+
+        function showResult(data) {
+            const scoreElement = document.getElementById('result-score');
+            animateNumber(scoreElement, 0, data.score, 1500);
+            
+            const detailsContainer = document.getElementById('answer-details');
+            detailsContainer.innerHTML = data.details.map((detail, index) => {
+                let optionsHtml = '';
+                let userAnswerText = '';
+                let correctAnswerText = '';
+                
+                if (detail.options) {
+                    try {
+                        const options = JSON.parse(detail.options);
+                        const getOptionText = (letter) => {
+                            const index = letter.charCodeAt(0) - 65;
+                            if (index >= 0 && index < options.length) {
+                                return `${letter}. ${options[index]}`;
+                            }
+                            return letter;
+                        };
+                        
+                        userAnswerText = detail.userAnswer.split('').map(getOptionText).join('、');
+                        correctAnswerText = detail.correctAnswer.split('').map(getOptionText).join('、');
+                        
+                        optionsHtml = `
+                            <p><strong>您的答案:</strong> ${userAnswerText}</p>
+                            <p><strong>正确答案:</strong> ${correctAnswerText}</p>
+                        `;
+                    } catch (e) {
+                        optionsHtml = `
+                            <p><strong>您的答案:</strong> ${detail.userAnswer}</p>
+                            <p><strong>正确答案:</strong> ${detail.correctAnswer}</p>
+                        `;
+                    }
+                } else {
+                    optionsHtml = `
+                        <p><strong>您的答案:</strong> ${detail.userAnswer}</p>
+                        <p><strong>正确答案:</strong> ${detail.correctAnswer}</p>
+                    `;
+                }
+                
+                const isWrong = !detail.isCorrect;
+                const wrongClass = isWrong ? 'wrong-answer' : '';
+                const expandButton = isWrong ? `<button class="btn-expand" onclick="toggleExplanation(${index})">查看解析</button>` : '';
+                const explanationHtml = isWrong ? `
+                    <div class="explanation hidden" id="explanation-${index}">
+                        <p><strong>解析：</strong></p>
+                        <p>这道题考查的是${getKnowledgePoint(detail.questionText)}，正确答案是${correctAnswerText}。${getExplanation(detail.questionText)}</p>
+                    </div>
+                ` : '';
+                
+                return `
+                    <div class="question-item ${wrongClass}">
+                        <div class="question-text">${detail.questionText}</div>
+                        <div style="margin-top: 10px;">
+                            ${optionsHtml}
+                            <p><strong>得分:</strong> ${detail.score}</p>
+                            <p><strong>是否正确:</strong> ${detail.isCorrect ? '✓ 正确' : '✗ 错误'}</p>
+                            ${expandButton}
+                            ${explanationHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const aiComment = document.getElementById('ai-comment');
+            aiComment.textContent = '';
+            aiComment.classList.remove('completed');
+
+            if (data.aiComment) {
+                typeWriter(data.aiComment, 'ai-comment');
+            } else {
+                aiComment.textContent = 'AI评语生成中...';
+            }
+
+            navigateTo('result');
+        }
+
+        function animateNumber(element, start, end, duration) {
+            const startTime = performance.now();
+            const update = () => {
+                const elapsed = performance.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.floor(start + (end - start) * progress);
+                element.textContent = current;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            };
+            requestAnimationFrame(update);
+        }
+
+        function toggleExplanation(index) {
+            const explanation = document.getElementById(`explanation-${index}`);
+            const button = explanation.previousElementSibling;
+            
+            if (explanation.classList.contains('hidden')) {
+                explanation.classList.remove('hidden');
+                button.textContent = '收起解析';
+            } else {
+                explanation.classList.add('hidden');
+                button.textContent = '查看解析';
+            }
+        }
+
+        function getKnowledgePoint(questionText) {
+            return '相关知识';
+        }
+
+        function getExplanation(questionText) {
+            return '建议复习相关知识点，加强理解和记忆。';
+        }
+
+        async function shareResult() {
+            showToast('分享功能开发中...');
+        }
+
+        async function loadAppsForStats() {
+            try {
+                const response = await fetch(`${API_BASE}/app/user/${currentUserId}?pageNum=1&pageSize=100`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    const select = document.getElementById('stats-app-select');
+                    select.innerHTML = '<option value="">请选择应用</option>' +
+                        result.data.records.map(app => `<option value="${app.appId}">${app.title}</option>`).join('');
+                }
+            } catch (error) {
+                console.error('加载应用列表失败', error);
+            }
+        }
+
+        async function loadStatistics() {
+            const appId = document.getElementById('stats-app-select').value;
+            if (!appId) {
+                document.getElementById('statistics-content').classList.add('hidden');
+                return;
+            }
+
+            const today = new Date();
+            const endDate = today.toISOString().split('T')[0];
+            const startDate = '2020-01-01';
+
+            try {
+                const response = await fetch(`${API_BASE}/statistics/query`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        appId: appId,
+                        startDate: startDate,
+                        endDate: endDate
+                    })
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    displayStatistics(result.data);
+                }
+            } catch (error) {
+                console.error('加载统计数据失败', error);
+            }
+        }
+
+        function displayStatistics(data) {
+            document.getElementById('statistics-content').classList.remove('hidden');
+            document.getElementById('stat-view-count').textContent = data.viewCount || 0;
+            document.getElementById('stat-answer-count').textContent = data.answerCount || 0;
+            document.getElementById('stat-share-count').textContent = data.shareCount || 0;
+            document.getElementById('stat-avg-score').textContent = data.avgScore != null ? data.avgScore.toFixed(2) : '0.00';
+
+            renderTrendChart(data.trendData || []);
+            renderDimensionChart(data.dimensionData || []);
+
+            loadHistoryAnswers();
+        }
+
+        async function loadHistoryAnswers() {
+            const appId = document.getElementById('stats-app-select').value;
+            if (!appId) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/answer/history?appId=${appId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    renderHistoryAnswers(result.data);
+                }
+            } catch (error) {
+                console.error('加载历史答题记录失败', error);
+            }
+        }
+
+        async function searchHistoryAnswers() {
+            const appId = document.getElementById('stats-app-select').value;
+            const keyword = document.getElementById('history-search-input').value;
+            if (!appId) {
+                showToast('请先选择应用', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/answer/history?appId=${appId}&keyword=${encodeURIComponent(keyword)}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    renderHistoryAnswers(result.data);
+                }
+            } catch (error) {
+                console.error('搜索历史答题记录失败', error);
+            }
+        }
+
+        function resetHistorySearch() {
+            document.getElementById('history-search-input').value = '';
+            loadHistoryAnswers();
+        }
+
+        function renderHistoryAnswers(answers) {
+            const tbody = document.getElementById('history-answers-tbody');
+            if (!answers || answers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">暂无数据</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = answers.map(answer => `
+                <tr>
+                    <td>${answer.answerId}</td>
+                    <td>${answer.userId}</td>
+                    <td>${answer.score}</td>
+                    <td>${new Date(answer.createTime).toLocaleString()}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="viewAnswerDetail('${answer.answerId}')">查看详情</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function formatDuration(seconds) {
+            if (!seconds) return '-';
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes}分${secs}秒`;
+        }
+
+        async function viewAnswerDetail(answerId) {
+            try {
+                const response = await fetch(`${API_BASE}/answer/detail?answerId=${answerId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    showAnswerDetailModal(result.data);
+                } else {
+                    showToast(result.message || '加载详情失败', 'error');
+                }
+            } catch (error) {
+                console.error('加载答题详情失败', error);
+                showToast('加载详情失败', 'error');
+            }
+        }
+
+        function showAnswerDetailModal(data) {
+            currentZoom = 1;
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.id = 'answer-detail-modal';
+            modal.innerHTML = `
+                <div class="modal-content" id="answer-detail-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;">
+                    <div class="modal-header">
+                        <h3>答题详情</h3>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <button class="zoom-btn" onclick="zoomModal(-0.1)" title="缩小">-</button>
+                            <button class="zoom-btn" onclick="zoomModal(0.1)" title="放大">+</button>
+                            <button class="close-btn" onclick="this.closest('.modal-overlay').remove()">×</button>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="result-card">
+                            <h4>答题信息</h4>
+                            <div class="app-stats">
+                                <div>答题ID: <strong>${data.answerId}</strong></div>
+                                <div>用户ID: <strong>${data.userId}</strong></div>
+                                <div>分数: <strong>${data.score}</strong></div>
+                                <div>答题时长: <strong>${formatDuration(data.duration)}</strong></div>
+                                <div>答题时间: <strong>${new Date(data.createTime).toLocaleString()}</strong></div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h4>答题详情</h4>
+                            <div id="answer-detail-questions"></div>
+                        </div>
+                        ${data.aiComment ? `
+                        <div class="card">
+                            <h4>AI评语</h4>
+                            <div class="ai-typing">${data.aiComment}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            const questionsContainer = document.getElementById('answer-detail-questions');
+            questionsContainer.innerHTML = data.details.map((detail, index) => `
+                <div class="question-item" style="margin-bottom: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px;">
+                    <h5 style="margin-bottom: 10px;">第${index + 1}题</h5>
+                    <div style="margin-bottom: 10px;">
+                        <strong>题目:</strong> ${detail.questionText || '-'}
+                    </div>
+                    ${detail.options ? `
+                    <div style="margin-bottom: 10px;">
+                        <strong>选项:</strong>
+                        <div style="margin-left: 20px;">
+                            ${JSON.parse(detail.options).map((opt, i) => `
+                                <div>${String.fromCharCode(65 + i)}. ${opt}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+                    <div style="margin-bottom: 10px;">
+                        <strong>用户答案:</strong> ${detail.userAnswer || '-'}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <strong>正确答案:</strong> ${detail.correctAnswer || '-'}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <strong>得分:</strong> ${detail.score || 0}
+                    </div>
+                    <div>
+                        <strong>是否正确:</strong> 
+                        <span style="color: ${detail.isCorrect ? 'green' : 'red'};">
+                            ${detail.isCorrect ? '✓ 正确' : '✗ 错误'}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        let currentZoom = 1;
+
+        function zoomModal(delta) {
+            const content = document.getElementById('answer-detail-content');
+            if (!content) return;
+            
+            currentZoom = Math.max(0.5, Math.min(2, currentZoom + delta));
+            content.style.transform = `scale(${currentZoom})`;
+            content.style.transformOrigin = 'top center';
+        }
+
+        function renderTrendChart(data) {
+            const chart = echarts.init(document.getElementById('trend-chart'));
+            const dates = data.map(item => item.date);
+            const viewCounts = data.map(item => item.viewCount);
+            const answerCounts = data.map(item => item.answerCount);
+            const shareCounts = data.map(item => item.shareCount || 0);
+
+            chart.setOption({
+                title: {
+                    text: '趋势分析',
+                    left: 'center',
+                    textStyle: {
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        color: '#495057'
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#6a7985'
+                        }
+                    },
+                    formatter: function(params) {
+                        let result = params[0].name + '<br/>';
+                        params.forEach(param => {
+                            result += param.marker + param.seriesName + ': ' + param.value + '<br/>';
+                        });
+                        return result;
+                    }
+                },
+                legend: {
+                    data: ['浏览次数', '答题次数', '分享次数'],
+                    bottom: 10,
+                    textStyle: {
+                        color: '#666'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '15%',
+                    top: '15%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: dates,
+                    boundaryGap: false,
+                    axisLabel: {
+                        rotate: 45,
+                        fontSize: 10,
+                        color: '#666'
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#e0e0e0'
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    splitLine: {
+                        lineStyle: {
+                            type: 'dashed',
+                            color: '#f0f0f0'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#666'
+                    }
+                },
+                series: [
+                    {
+                        name: '浏览次数',
+                        type: 'line',
+                        data: viewCounts,
+                        smooth: true,
+                        symbol: 'circle',
+                        symbolSize: 8,
+                        lineStyle: {
+                            width: 3,
+                            color: '#5470c6'
+                        },
+                        itemStyle: {
+                            color: '#5470c6',
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: 'rgba(84, 112, 198, 0.3)' },
+                                { offset: 1, color: 'rgba(84, 112, 198, 0.1)' }
+                            ])
+                        }
+                    },
+                    {
+                        name: '答题次数',
+                        type: 'line',
+                        data: answerCounts,
+                        smooth: true,
+                        symbol: 'circle',
+                        symbolSize: 8,
+                        lineStyle: {
+                            width: 3,
+                            color: '#91cc75'
+                        },
+                        itemStyle: {
+                            color: '#91cc75',
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: 'rgba(145, 204, 117, 0.3)' },
+                                { offset: 1, color: 'rgba(145, 204, 117, 0.1)' }
+                            ])
+                        }
+                    },
+                    {
+                        name: '分享次数',
+                        type: 'line',
+                        data: shareCounts,
+                        smooth: true,
+                        symbol: 'circle',
+                        symbolSize: 8,
+                        lineStyle: {
+                            width: 3,
+                            color: '#fac858'
+                        },
+                        itemStyle: {
+                            color: '#fac858',
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: 'rgba(250, 200, 88, 0.3)' },
+                                { offset: 1, color: 'rgba(250, 200, 88, 0.1)' }
+                            ])
+                        }
+                    }
+                ]
+            });
+        }
+
+        function renderDimensionChart(data) {
+            const chart = echarts.init(document.getElementById('dimension-chart'));
+            
+            // 转换数据格式，确保数据结构正确
+            const processedData = data.map(item => ({
+                name: item.name || item.type || '未知',
+                correct: item.correct || 0,
+                wrong: item.wrong || 0,
+                rate: item.rate || item.value || 0
+            }));
+            
+            const names = processedData.map(item => item.name);
+            const correctData = processedData.map(item => item.correct);
+            const wrongData = processedData.map(item => item.wrong);
+
+            chart.setOption({
+                title: {
+                    text: '题型正确率分析',
+                    left: 'center',
+                    textStyle: {
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        color: '#495057'
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    },
+                    formatter: function(params) {
+                        const item = processedData[params[0].dataIndex];
+                        return `${item.name}<br/>` +
+                               `正确: ${item.correct}<br/>` +
+                               `错误: ${item.wrong}<br/>` +
+                               `正确率: ${item.rate}%`;
+                    }
+                },
+                legend: {
+                    data: ['正确', '错误'],
+                    bottom: 10,
+                    textStyle: {
+                        color: '#666'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '15%',
+                    top: '15%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: names,
+                    axisLabel: {
+                        rotate: 45,
+                        fontSize: 10,
+                        color: '#666'
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#e0e0e0'
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    splitLine: {
+                        lineStyle: {
+                            type: 'dashed',
+                            color: '#f0f0f0'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#666'
+                    }
+                },
+                series: [
+                    {
+                        name: '正确',
+                        type: 'bar',
+                        data: correctData,
+                        itemStyle: {
+                            color: '#52c41a'
+                        },
+                        barWidth: '40%'
+                    },
+                    {
+                        name: '错误',
+                        type: 'bar',
+                        data: wrongData,
+                        itemStyle: {
+                            color: '#ff4d4f'
+                        },
+                        barWidth: '40%'
+                    }
+                ]
+            });
+        }
+
+        function renderOptionChart(data) {
+            const chart = echarts.init(document.getElementById('option-chart'));
+            
+            // 确保数据格式正确
+            const processedData = data.map(item => ({
+                name: item.name || item.option || '未知',
+                value: item.value || item.count || 0,
+                rate: item.rate || 0
+            }));
+
+            chart.setOption({
+                title: {
+                    text: '选项分布',
+                    left: 'center',
+                    textStyle: {
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        color: '#495057'
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        const item = processedData.find(d => d.name === params.name);
+                        return `${params.name}<br/>` +
+                               `选择次数: ${params.value}<br/>` +
+                               `占比: ${params.percent}%<br/>` +
+                               (item.rate ? `正确率: ${item.rate}%` : '');
+                    }
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    textStyle: {
+                        color: '#666'
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '18',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: processedData
+                }]
+            });
+        }
+
+        window.addEventListener('resize', () => {
+            echarts.getInstanceByDom(document.getElementById('trend-chart'))?.resize();
+            echarts.getInstanceByDom(document.getElementById('dimension-chart'))?.resize();
+            echarts.getInstanceByDom(document.getElementById('option-chart'))?.resize();
+        });
+
+        async function loadPendingAudits() {
+            try {
+                const response = await fetch(`${API_BASE}/audit/pending`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    renderAudits(result.data);
+                }
+            } catch (error) {
+                console.error('加载待审核列表失败', error);
+                document.getElementById('audit-list').innerHTML = '<p>加载失败</p>';
+            }
+        }
+
+        function renderAudits(audits) {
+            const container = document.getElementById('audit-list');
+            if (audits.length === 0) {
+                container.innerHTML = '<p>暂无待审核应用</p>';
+                return;
+            }
+            container.innerHTML = audits.map(audit => `
+                <div class="app-card">
+                    <h4>${audit.appTitle}</h4>
+                    <p>申请时间: ${new Date(audit.auditTime).toLocaleString()}</p>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-primary" onclick="auditApp('${audit.appId}', 'approved')">通过</button>
+                        <button class="btn btn-secondary" onclick="auditApp('${audit.appId}', 'rejected')">拒绝</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadAppsForShare() {
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/app/user/${currentUserId}?pageNum=1&pageSize=100`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    const select = document.getElementById('share-app-select');
+                    select.innerHTML = '<option value="">请选择应用</option>' +
+                        result.data.records.map(app => `<option value="${app.appId}">${app.title}</option>`).join('');
+                }
+            } catch (error) {
+                console.error('加载应用列表失败', error);
+            }
+        }
+
+        async function createShare() {
+            const appId = document.getElementById('share-app-select').value;
+            if (!appId) {
+                showToast('请选择应用', 'error');
+                return;
+            }
+
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/share/create?appId=${appId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    document.getElementById('share-result').classList.remove('hidden');
+                    document.getElementById('share-code').value = result.data.shareCode;
+                    document.getElementById('share-url').value = `${window.location.origin}/share/${result.data.shareCode}`;
+                    showToast('分享链接创建成功');
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('创建分享失败', error);
+                showToast('创建分享失败', 'error');
+            }
+        }
+
+        function copyShareUrl() {
+            const shareUrl = document.getElementById('share-url');
+            shareUrl.select();
+            document.execCommand('copy');
+            showToast('链接已复制');
+        }
+
+        async function loadMyApps() {
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/app/user/${currentUserId}?pageNum=1&pageSize=100`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    renderMyApps(result.data.records);
+                }
+            } catch (error) {
+                console.error('加载我的应用失败', error);
+                document.getElementById('my-apps-list').innerHTML = '<p>加载失败</p>';
+            }
+        }
+
+        function renderMyApps(apps) {
+            const container = document.getElementById('my-apps-list');
+            if (apps.length === 0) {
+                container.innerHTML = '<p>暂无应用</p>';
+                return;
+            }
+            container.innerHTML = apps.map(app => `
+                <div class="app-card">
+                    <h4>${app.title}</h4>
+                    <p>${app.description || '暂无描述'}</p>
+                    <p>状态: ${getAppStatusText(app.status)}</p>
+                    <p>浏览次数: ${app.viewCount}</p>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-primary" onclick="editApp('${app.appId}')">编辑</button>
+                        <button class="btn btn-secondary" onclick="deleteApp('${app.appId}')">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getAppStatusText(status) {
+            switch(status) {
+                case 0: return '待审核';
+                case 1: return '已通过';
+                case 2: return '已拒绝';
+                default: return '未知';
+            }
+        }
+
+        async function editApp(appId) {
+            try {
+                const response = await fetch(`${API_BASE}/app/${appId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    const app = result.data;
+                    document.getElementById('app-title').value = app.title;
+                    document.getElementById('app-description').value = app.description;
+                    document.getElementById('app-type').value = app.type;
+                    currentAppId = appId;
+                    
+                    document.querySelector('#page-create h3').textContent = '编辑应用';
+                    document.getElementById('cancel-edit-btn').style.display = 'inline-block';
+                    
+                    navigateTo('create');
+                    showToast('应用信息已加载，修改后点击创建按钮更新');
+                }
+            } catch (error) {
+                console.error('加载应用信息失败', error);
+                showToast('加载失败', 'error');
+            }
+        }
+
+        function cancelEdit() {
+            currentAppId = null;
+            document.getElementById('app-title').value = '';
+            document.getElementById('app-description').value = '';
+            document.getElementById('app-type').value = 'mbti';
+            document.querySelector('#page-create h3').textContent = '创建答题应用';
+            document.getElementById('cancel-edit-btn').style.display = 'none';
+            showToast('已取消编辑');
+        }
+
+        async function updateApp() {
+            const title = document.getElementById('app-title').value;
+            const description = document.getElementById('app-description').value;
+            const type = document.getElementById('app-type').value;
+
+            if (!title) {
+                showToast('请输入应用标题', 'error');
+                return;
+            }
+
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/app/update`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ appId: currentAppId, title, description, type })
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    currentAppId = null;
+                    document.querySelector('#page-create h3').textContent = '创建答题应用';
+                    document.getElementById('cancel-edit-btn').style.display = 'none';
+                    document.getElementById('app-title').value = '';
+                    document.getElementById('app-description').value = '';
+                    document.getElementById('app-type').value = 'mbti';
+                    showToast('应用更新成功');
+                    navigateTo('my-apps');
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('更新应用失败', error);
+                showToast('更新失败', 'error');
+            }
+        }
+
+        async function deleteApp(appId) {
+            if (!confirm('确定要删除这个应用吗？')) {
+                return;
+            }
+
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/app/${appId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    showToast('应用删除成功');
+                    loadMyApps();
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('删除应用失败', error);
+                showToast('删除失败', 'error');
+            }
+        }
+
+        async function loadAnswerResult(answerId) {
+            try {
+                const response = await fetch(`${API_BASE}/answer/result/${answerId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    displayAnswerResult(result.data);
+                }
+            } catch (error) {
+                console.error('加载答题结果失败', error);
+            }
+        }
+
+        function displayAnswerResult(data) {
+            document.getElementById('result-score').textContent = data.totalScore;
+            
+            if (data.aiComment) {
+                document.getElementById('ai-comment-container').classList.remove('hidden');
+                typeWriter(data.aiComment, 'ai-comment');
+            }
+
+            const detailsContainer = document.getElementById('answer-details');
+            detailsContainer.innerHTML = data.details.map(detail => `
+                <div class="question-item">
+                    <div class="question-text">${detail.questionText}</div>
+                    <div>你的答案: ${detail.userAnswer}</div>
+                    <div>正确答案: ${detail.correctAnswer}</div>
+                    <div>得分: ${detail.score}</div>
+                </div>
+            `).join('');
+        }
+
+        function typeWriter(text, elementId, speed = 30) {
+            const element = document.getElementById(elementId);
+            element.textContent = '';
+            element.classList.remove('completed');
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    element.classList.add('completed');
+                }
+            }
+            type();
+        }
+
+        function updateQuestionTypeRatios() {
+            const checkboxes = [
+                document.getElementById('qtype-single'),
+                document.getElementById('qtype-multiple'),
+                document.getElementById('qtype-judgment'),
+                document.getElementById('qtype-text')
+            ];
+            
+            const selectedCount = checkboxes.filter(cb => cb.checked).length;
+            
+            checkboxes.forEach(cb => {
+                const ratioInput = document.getElementById(`ratio-${cb.value}`);
+                const ratioSpan = ratioInput.nextElementSibling;
+                
+                if (selectedCount > 1 && cb.checked) {
+                    ratioInput.style.display = 'block';
+                    ratioSpan.style.display = 'inline';
+                    if (ratioInput.value == 100) {
+                        ratioInput.value = Math.round(100 / selectedCount);
+                    }
+                } else {
+                    ratioInput.style.display = 'none';
+                    ratioSpan.style.display = 'none';
+                    if (cb.checked) {
+                        ratioInput.value = 100;
+                    }
+                }
+            });
+        }
+
+        async function generateAiComment(appId, answerId) {
+            let isCompleted = false;
+            const eventSource = new EventSource(
+                `${API_BASE}/ai/generate/comment/stream?appId=${appId}&answerId=${answerId}&token=${authToken}`
+            );
+
+            eventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+
+                if (data.type === 'start') {
+                    document.getElementById('ai-comment-container').classList.remove('hidden');
+                    document.getElementById('ai-comment').textContent = data.message;
+                } else if (data.type === 'typing') {
+                    document.getElementById('ai-comment').textContent = data.content;
+                } else if (data.type === 'complete') {
+                    isCompleted = true;
+                    eventSource.close();
+                } else if (data.type === 'error') {
+                    showToast(data.message, 'error');
+                    eventSource.close();
+                }
+            };
+
+            eventSource.onerror = () => {
+                eventSource.close();
+                if (!isCompleted) {
+                    showToast('生成评语失败', 'error');
+                }
+            };
+        }
+
+        async function loadSharedApp() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const shareCode = urlParams.get('share');
+            
+            if (shareCode) {
+                try {
+                    const response = await fetch(`${API_BASE}/share/${shareCode}`);
+                    const result = await response.json();
+                    if (result.code === 200) {
+                        currentAppId = result.data;
+                        loadQuestions(currentAppId);
+                        navigateTo('answer');
+                    } else {
+                        showToast('分享链接无效', 'error');
+                    }
+                } catch (error) {
+                    console.error('加载分享应用失败', error);
+                    showToast('加载分享应用失败', 'error');
+                }
+            }
+        }
+
+        // ==================== 个人中心相关函数 ====================
+        async function loadProfile() {
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/user/${currentUserId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    renderProfile(result.data);
+                }
+            } catch (error) {
+                console.error('加载个人资料失败', error);
+            }
+        }
+
+        function renderProfile(user) {
+            document.getElementById('profile-info').innerHTML = `
+                <div style="display: flex; gap: 20px; align-items: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 36px;">
+                        ${user.nickname ? user.nickname.charAt(0) : '用'}
+                    </div>
+                    <div>
+                        <h4>${user.nickname || user.username}</h4>
+                        <p>用户名: ${user.username}</p>
+                        <p>邮箱: ${user.email || '未设置'}</p>
+                        <p>手机号: ${user.phone || '未设置'}</p>
+                        <p>注册时间: ${new Date(user.createTime).toLocaleString()}</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('profile-nickname').value = user.nickname || '';
+            document.getElementById('profile-email').value = user.email || '';
+            document.getElementById('profile-phone').value = user.phone || '';
+        }
+
+        async function updateProfile() {
+            const nickname = document.getElementById('profile-nickname').value;
+            const email = document.getElementById('profile-email').value;
+            const phone = document.getElementById('profile-phone').value;
+
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/user/${currentUserId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ nickname, email, phone })
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    showToast('资料更新成功');
+                    loadProfile();
+                    currentUser.nickname = nickname || currentUser.nickname;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    checkLoginStatus();
+                } else {
+                    showToast(result.message || '更新失败', 'error');
+                }
+            } catch (error) {
+                console.error('更新资料失败', error);
+                showToast('更新失败', 'error');
+            }
+        }
+
+        async function changePassword() {
+            const oldPassword = document.getElementById('profile-old-password').value;
+            const newPassword = document.getElementById('profile-new-password').value;
+
+            if (!oldPassword || !newPassword) {
+                showToast('请填写原密码和新密码', 'error');
+                return;
+            }
+
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/user/${currentUserId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ oldPassword, newPassword })
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    showToast('密码修改成功');
+                    document.getElementById('profile-old-password').value = '';
+                    document.getElementById('profile-new-password').value = '';
+                } else {
+                    showToast(result.message || '修改失败', 'error');
+                }
+            } catch (error) {
+                console.error('修改密码失败', error);
+                showToast('修改失败', 'error');
+            }
+        }
+
+        async function loadUserStatistics() {
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/user/${currentUserId}/statistics`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    renderUserStatistics(result.data);
+                }
+            } catch (error) {
+                console.error('加载用户统计失败', error);
+            }
+        }
+
+        function renderUserStatistics(stats) {
+            document.getElementById('profile-statistics').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px;">
+                    <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 32px; font-weight: bold; color: #667eea;">${stats.totalAnswers || 0}</div>
+                        <div style="color: #6c757d; font-size: 14px;">总答题次数</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%); padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 32px; font-weight: bold; color: #28a745;">${stats.correctAnswers || 0}</div>
+                        <div style="color: #6c757d; font-size: 14px;">正确题数</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(200, 35, 51, 0.1) 100%); padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 32px; font-weight: bold; color: #dc3545;">${stats.wrongAnswers || 0}</div>
+                        <div style="color: #6c757d; font-size: 14px;">错误题数</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.1) 100%); padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 32px; font-weight: bold; color: #ffc107;">${stats.totalScore || 0}</div>
+                        <div style="color: #6c757d; font-size: 14px;">总得分</div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px;">
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold; color: #495057;">${stats.accuracyRate ? stats.accuracyRate.toFixed(1) : 0}%</div>
+                        <div style="color: #6c757d; font-size: 14px;">正确率</div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold; color: #495057;">🔥 ${stats.streakDays || 0}</div>
+                        <div style="color: #6c757d; font-size: 14px;">连续答题天数</div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold; color: #495057;">📅 ${stats.totalDays || 0}</div>
+                        <div style="color: #6c757d; font-size: 14px;">累计答题天数</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadAchievements() {
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/user/${currentUserId}/achievements`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    renderAchievements(result.data);
+                }
+            } catch (error) {
+                console.error('加载成就失败', error);
+            }
+        }
+
+        function renderAchievements(achievements) {
+            document.getElementById('profile-achievements').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    ${achievements.map(achievement => `
+                        <div style="background: ${achievement.unlocked ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)' : '#f8f9fa'}; 
+                                   border: 2px solid ${achievement.unlocked ? '#667eea' : '#e9ecef'}; 
+                                   border-radius: 12px; padding: 15px; text-align: center;
+                                   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                                   ${achievement.unlocked ? 'transform: scale(1);' : 'opacity: 0.6;'}">
+                            <div style="font-size: 36px; margin-bottom: 10px;">${achievement.unlocked ? achievement.icon : '🔒'}</div>
+                            <div style="font-weight: 600; color: ${achievement.unlocked ? '#667eea' : '#6c757d'}; margin-bottom: 5px;">
+                                ${achievement.name}
+                            </div>
+                            <div style="font-size: 12px; color: #6c757d; margin-bottom: 10px;">${achievement.description}</div>
+                            ${!achievement.unlocked && achievement.progress > 0 ? `
+                                <div style="font-size: 12px; color: #667eea;">
+                                    进度: ${achievement.progress}/${achievement.target}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        async function loadUserAnswerHistory() {
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/user/${currentUserId}/history?page=1&size=20`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    renderUserAnswerHistory(result.data);
+                }
+            } catch (error) {
+                console.error('加载答题历史失败', error);
+            }
+        }
+
+        function renderUserAnswerHistory(history) {
+            if (history.length === 0) {
+                document.getElementById('profile-history').innerHTML = '<p style="text-align: center; color: #6c757d;">暂无答题记录</p>';
+                return;
+            }
+
+            document.getElementById('profile-history').innerHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>应用名称</th>
+                            <th>题目数</th>
+                            <th>正确/错误</th>
+                            <th>得分</th>
+                            <th>答题时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${history.map(item => `
+                            <tr>
+                                <td>${item.appName || '未知应用'}</td>
+                                <td>${item.totalQuestions}</td>
+                                <td>
+                                    <span style="color: #28a745;">✓ ${item.correctCount}</span> / 
+                                    <span style="color: #dc3545;">✗ ${item.wrongCount}</span>
+                                </td>
+                                <td><strong>${item.score}</strong></td>
+                                <td>${new Date(item.submitTime).toLocaleString()}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // ==================== 题库管理相关函数 ====================
+        async function loadQuestionsForBank() {
+            const appId = document.getElementById('qb-app-select').value;
+            if (!appId) {
+                document.getElementById('questions-table-container').innerHTML = '<div class="loading">请先选择应用</div>';
+                return;
+            }
+
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/question/app/${appId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    renderQuestionsForBank(result.data);
+                }
+            } catch (error) {
+                console.error('加载题目失败', error);
+                document.getElementById('questions-table-container').innerHTML = '<p>加载失败</p>';
+            }
+        }
+
+        function renderQuestionsForBank(questions) {
+            if (questions.length === 0) {
+                document.getElementById('questions-table-container').innerHTML = '<p style="text-align: center; color: #6c757d;">暂无题目</p>';
+                return;
+            }
+
+            document.getElementById('questions-table-container').innerHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>题目内容</th>
+                            <th>类型</th>
+                            <th>分值</th>
+                            <th>正确答案</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${questions.map((q, index) => `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    ${q.questionText}
+                                </td>
+                                <td>${getQuestionTypeText(q.questionType)}</td>
+                                <td>${q.score}</td>
+                                <td>${q.correctAnswer}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" onclick="editQuestion(${q.id})">编辑</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteQuestion(${q.id})">删除</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function getQuestionTypeText(type) {
+            switch(type) {
+                case 'single': return '单选题';
+                case 'multiple': return '多选题';
+                case 'judgment': return '判断题';
+                case 'text': return '简答题';
+                default: return '未知';
+            }
+        }
+
+        function showAddQuestionModal() {
+            document.getElementById('question-id').value = '';
+            document.getElementById('question-text').value = '';
+            document.getElementById('question-type').value = 'single';
+            document.getElementById('option-a').value = '';
+            document.getElementById('option-b').value = '';
+            document.getElementById('option-c').value = '';
+            document.getElementById('option-d').value = '';
+            document.getElementById('question-answer').value = '';
+            document.getElementById('question-score').value = '10';
+            document.getElementById('question-modal-title').textContent = '添加题目';
+            document.getElementById('question-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeQuestionModal() {
+            document.getElementById('question-modal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        async function saveQuestion() {
+            const id = document.getElementById('question-id').value;
+            const questionText = document.getElementById('question-text').value;
+            const questionType = document.getElementById('question-type').value;
+            const answer = document.getElementById('question-answer').value;
+            const score = parseInt(document.getElementById('question-score').value);
+
+            if (!questionText || !answer) {
+                showToast('请填写题目内容和正确答案', 'error');
+                return;
+            }
+
+            const options = [];
+            if (questionType !== 'text') {
+                const optA = document.getElementById('option-a').value;
+                const optB = document.getElementById('option-b').value;
+                if (optA) options.push(optA);
+                if (optB) options.push(optB);
+                const optC = document.getElementById('option-c').value;
+                const optD = document.getElementById('option-d').value;
+                if (optC) options.push(optC);
+                if (optD) options.push(optD);
+            }
+
+            const appId = document.getElementById('qb-app-select').value;
+            if (!appId) {
+                showToast('请先选择应用', 'error');
+                return;
+            }
+
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            const data = {
+                appId,
+                questionText,
+                questionType,
+                options,
+                correctAnswer: answer,
+                score
+            };
+
+            try {
+                let url = `${API_BASE}/question`;
+                let method = 'POST';
+                
+                if (id) {
+                    url = `${API_BASE}/question/${id}`;
+                    method = 'PUT';
+                }
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    showToast(id ? '题目更新成功' : '题目添加成功');
+                    closeQuestionModal();
+                    loadQuestionsForBank();
+                } else {
+                    showToast(result.message || '保存失败', 'error');
+                }
+            } catch (error) {
+                console.error('保存题目失败', error);
+                showToast('保存失败', 'error');
+            }
+        }
+
+        async function editQuestion(id) {
+            try {
+                const response = await fetch(`${API_BASE}/question/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    const question = result.data;
+                    document.getElementById('question-id').value = question.id;
+                    document.getElementById('question-text').value = question.questionText;
+                    document.getElementById('question-type').value = question.questionType;
+                    document.getElementById('question-answer').value = question.correctAnswer;
+                    document.getElementById('question-score').value = question.score;
+                    
+                    if (question.options) {
+                        try {
+                            const options = JSON.parse(question.options);
+                            if (options.length >= 1) document.getElementById('option-a').value = options[0];
+                            if (options.length >= 2) document.getElementById('option-b').value = options[1];
+                            if (options.length >= 3) document.getElementById('option-c').value = options[2];
+                            if (options.length >= 4) document.getElementById('option-d').value = options[3];
+                        } catch (e) {
+                            console.error('解析选项失败', e);
+                        }
+                    }
+                    
+                    document.getElementById('question-modal-title').textContent = '编辑题目';
+                    document.getElementById('question-modal').style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+            } catch (error) {
+                console.error('加载题目失败', error);
+                showToast('加载失败', 'error');
+            }
+        }
+
+        async function deleteQuestion(id) {
+            if (!confirm('确定要删除这个题目吗？')) {
+                return;
+            }
+
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/question/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    showToast('题目删除成功');
+                    loadQuestionsForBank();
+                } else {
+                    showToast(result.message || '删除失败', 'error');
+                }
+            } catch (error) {
+                console.error('删除题目失败', error);
+                showToast('删除失败', 'error');
+            }
+        }
+
+        // ==================== 统计分析增强函数 ====================
+        async function loadBehaviorAnalysis() {
+            const appId = document.getElementById('stats-app-select').value;
+            if (!appId) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/statistics/behavior/${appId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    displayBehaviorAnalysis(result.data);
+                }
+            } catch (error) {
+                console.error('加载行为分析失败', error);
+            }
+        }
+
+        function displayBehaviorAnalysis(data) {
+            document.getElementById('behavior-analysis').innerHTML = `
+                <div class="card">
+                    <h3>用户行为分析</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                        <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); padding: 20px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 32px; font-weight: bold; color: #667eea;">${data.totalUsers || 0}</div>
+                            <div style="color: #6c757d; font-size: 14px;">总用户数</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%); padding: 20px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 32px; font-weight: bold; color: #28a745;">${data.activeUsers || 0}</div>
+                            <div style="color: #6c757d; font-size: 14px;">活跃用户(30天)</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.1) 100%); padding: 20px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 32px; font-weight: bold; color: #ffc107;">${data.newUsers || 0}</div>
+                            <div style="color: #6c757d; font-size: 14px;">新用户(7天)</div>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 32px; font-weight: bold; color: #495057;">${data.avgAnswerTime || 0}s</div>
+                            <div style="color: #6c757d; font-size: 14px;">平均答题时长</div>
+                        </div>
+                    </div>
+                    <div class="charts-container" style="grid-template-columns: 1fr 1fr;">
+                        <div class="chart-box">
+                            <h4>小时分布</h4>
+                            <div id="hourly-chart" style="height: 250px;"></div>
+                        </div>
+                        <div class="chart-box">
+                            <h4>星期分布</h4>
+                            <div id="weekly-chart" style="height: 250px;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            renderHourlyChart(data.hourlyDistribution || []);
+            renderWeeklyChart(data.weeklyDistribution || []);
+        }
+
+        function renderHourlyChart(data) {
+            const chart = echarts.init(document.getElementById('hourly-chart'));
+            const hours = data.map(item => `${item.hour}:00`);
+            const counts = data.map(item => item.answerCount);
+
+            chart.setOption({
+                tooltip: { trigger: 'axis' },
+                grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+                xAxis: { type: 'category', data: hours, axisLabel: { rotate: 45, fontSize: 10 } },
+                yAxis: { type: 'value' },
+                series: [{
+                    type: 'bar',
+                    data: counts,
+                    itemStyle: { color: '#667eea', borderRadius: [4, 4, 0, 0] },
+                    barWidth: '60%'
+                }]
+            });
+        }
+
+        function renderWeeklyChart(data) {
+            const chart = echarts.init(document.getElementById('weekly-chart'));
+            const days = data.map(item => item.dayOfWeek);
+            const counts = data.map(item => item.answerCount);
+
+            chart.setOption({
+                tooltip: { trigger: 'axis' },
+                grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+                xAxis: { type: 'category', data: days },
+                yAxis: { type: 'value' },
+                series: [{
+                    type: 'bar',
+                    data: counts,
+                    itemStyle: { color: '#764ba2', borderRadius: [4, 4, 0, 0] },
+                    barWidth: '60%'
+                }]
+            });
+        }
+
+        async function loadDifficultyAnalysis() {
+            const appId = document.getElementById('stats-app-select').value;
+            if (!appId) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/statistics/difficulty/${appId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    displayDifficultyAnalysis(result.data);
+                }
+            } catch (error) {
+                console.error('加载难度分析失败', error);
+            }
+        }
+
+        function displayDifficultyAnalysis(data) {
+            document.getElementById('difficulty-analysis').innerHTML = `
+                <div class="card">
+                    <h3>题目难度分析</h3>
+                    <div class="charts-container" style="grid-template-columns: 1fr 1fr;">
+                        <div class="chart-box">
+                            <h4>难度分布</h4>
+                            <div id="difficulty-chart" style="height: 250px;"></div>
+                        </div>
+                        <div class="chart-box">
+                            <h4>难度正确率</h4>
+                            <div id="difficulty-rate-chart" style="height: 250px;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            renderDifficultyChart(data.difficultyDistribution || []);
+            renderDifficultyRateChart(data.difficultyDistribution || []);
+        }
+
+        function renderDifficultyChart(data) {
+            const chart = echarts.init(document.getElementById('difficulty-chart'));
+            const names = data.map(item => item.difficulty);
+            const counts = data.map(item => item.count);
+
+            chart.setOption({
+                tooltip: { trigger: 'item' },
+                series: [{
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    data: data.map((item, index) => ({
+                        name: item.difficulty,
+                        value: item.count,
+                        itemStyle: { color: ['#28a745', '#ffc107', '#dc3545'][index] }
+                    }))
+                }]
+            });
+        }
+
+        function renderDifficultyRateChart(data) {
+            const chart = echarts.init(document.getElementById('difficulty-rate-chart'));
+            const names = data.map(item => item.difficulty);
+            const rates = data.map(item => item.avgAccuracy);
+
+            chart.setOption({
+                tooltip: { trigger: 'axis' },
+                grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+                xAxis: { type: 'category', data: names },
+                yAxis: { type: 'value', max: 100 },
+                series: [{
+                    type: 'bar',
+                    data: rates,
+                    itemStyle: { color: '#91cc75', borderRadius: [4, 4, 0, 0] },
+                    barWidth: '60%'
+                }]
+            });
+        }
+
+        async function loadKnowledgeAnalysis() {
+            const appId = document.getElementById('stats-app-select').value;
+            if (!appId) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/statistics/knowledge/${appId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    displayKnowledgeAnalysis(result.data);
+                }
+            } catch (error) {
+                console.error('加载知识点分析失败', error);
+            }
+        }
+
+        function displayKnowledgeAnalysis(data) {
+            document.getElementById('knowledge-analysis').innerHTML = `
+                <div class="card">
+                    <h3>知识点掌握分析</h3>
+                    <div class="charts-container" style="grid-template-columns: 1fr;">
+                        <div class="chart-box">
+                            <h4>知识点正确率分布</h4>
+                            <div id="knowledge-chart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+                        <div style="background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(200, 35, 51, 0.1) 100%); padding: 20px; border-radius: 12px;">
+                            <h4>⚠️ 需要加强的知识点</h4>
+                            ${data.weakPoints && data.weakPoints.length > 0 ? `
+                                <ul style="margin-left: 20px; margin-top: 15px;">
+                                    ${data.weakPoints.map(wp => `
+                                        <li style="margin-bottom: 10px;">
+                                            <strong>${wp.knowledge}</strong> - 正确率: ${wp.accuracyRate}%
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            ` : '<p style="color: #6c757d; margin-top: 10px;">暂无需要加强的知识点</p>'}
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%); padding: 20px; border-radius: 12px;">
+                            <h4>✅ 掌握较好的知识点</h4>
+                            ${data.strongPoints && data.strongPoints.length > 0 ? `
+                                <ul style="margin-left: 20px; margin-top: 15px;">
+                                    ${data.strongPoints.map(sp => `
+                                        <li style="margin-bottom: 10px;">
+                                            <strong>${sp.knowledge}</strong> - 正确率: ${sp.accuracyRate}%
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            ` : '<p style="color: #6c757d; margin-top: 10px;">暂无掌握较好的知识点</p>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            renderKnowledgeChart(data.knowledgeDistribution || []);
+        }
+
+        function renderKnowledgeChart(data) {
+            const chart = echarts.init(document.getElementById('knowledge-chart'));
+            const names = data.map(item => item.knowledge);
+            const rates = data.map(item => item.accuracyRate);
+
+            chart.setOption({
+                tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+                xAxis: { type: 'category', data: names, axisLabel: { rotate: 45, fontSize: 12 } },
+                yAxis: { type: 'value', max: 100 },
+                series: [{
+                    type: 'bar',
+                    data: rates.map((rate, index) => ({
+                        value: rate,
+                        itemStyle: {
+                            color: rate >= 80 ? '#28a745' : rate >= 60 ? '#ffc107' : '#dc3545',
+                            borderRadius: [4, 4, 0, 0]
+                        }
+                    })),
+                    barWidth: '50%'
+                }]
+            });
+        }
+
+        // ==================== 数据导出函数 ====================
+        async function exportStatistics() {
+            const appId = document.getElementById('stats-app-select').value;
+            if (!appId) {
+                showToast('请先选择应用', 'error');
+                return;
+            }
+
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            const today = new Date();
+            const endDate = today.toISOString().split('T')[0];
+            const startDate = '2020-01-01';
+
+            try {
+                const response = await fetch(`${API_BASE}/export/statistics/excel`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ appId, startDate, endDate })
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    let filename = '统计报告.xlsx';
+                    if (contentDisposition) {
+                        const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                        if (match && match[1]) {
+                            filename = decodeURIComponent(match[1].replace(/['"]/g, ''));
+                        }
+                    }
+                    
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    showToast('导出成功');
+                } else {
+                    showToast('导出失败', 'error');
+                }
+            } catch (error) {
+                console.error('导出失败', error);
+                showToast('导出失败', 'error');
+            }
+        }
+
+        // 页面导航时加载数据
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.dataset.page === 'profile') {
+                    loadProfile();
+                    loadUserStatistics();
+                    loadAchievements();
+                    loadUserAnswerHistory();
+                } else if (item.dataset.page === 'question-bank') {
+                    loadAppsForQuestionBank();
+                } else if (item.dataset.page === 'statistics') {
+                    // 统计页面已在navigateTo中处理
+                }
+            });
+        });
+
+        async function loadAppsForQuestionBank() {
+            if (!authToken) {
+                showToast('请先登录', 'error');
+                navigateTo('login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/app/user/${currentUserId}?pageNum=1&pageSize=100`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    const select = document.getElementById('qb-app-select');
+                    select.innerHTML = '<option value="">请选择应用</option>' +
+                        result.data.records.map(app => `<option value="${app.appId}">${app.title}</option>`).join('');
+                }
+            } catch (error) {
+                console.error('加载应用列表失败', error);
+            }
+        }
+
+        loadHotApps();
+        loadSharedApp();
+        initGuide();
+    </script>
+
+    <script>
+        // 新手引导功能
+        function initGuide() {
+            const hasCompletedGuide = localStorage.getItem('guideCompleted');
+            if (!hasCompletedGuide && authToken) {
+                setTimeout(() => {
+                    showGuide();
+                }, 1000);
+            }
+        }
+
+        function showGuide() {
+            document.getElementById('guide-modal').style.display = 'block';
+            updateGuideContent();
+        }
+
+        function closeGuide() {
+            document.getElementById('guide-modal').style.display = 'none';
+        }
+
+        function updateGuideContent() {
+            const step = guideSteps[guideCurrentStep - 1];
+            document.getElementById('guide-content').innerHTML = `
+                <div class="guide-title">${step.title}</div>
+                <div class="guide-description">${step.desc}</div>
+                <div class="guide-image">${step.icon}</div>
+            `;
+            document.getElementById('guide-step-info').textContent = `步骤 ${guideCurrentStep}/${guideSteps.length}`;
+            document.getElementById('guide-progress-fill').style.width = `${(guideCurrentStep / guideSteps.length) * 100}%`;
+            
+            document.getElementById('guide-prev').style.display = guideCurrentStep > 1 ? 'block' : 'none';
+            document.getElementById('guide-next').style.display = guideCurrentStep < guideSteps.length ? 'block' : 'none';
+            document.getElementById('guide-finish').style.display = guideCurrentStep === guideSteps.length ? 'block' : 'none';
+        }
+
+        function nextGuideStep() {
+            if (guideCurrentStep < guideSteps.length) {
+                guideCurrentStep++;
+                updateGuideContent();
+            }
+        }
+
+        function prevGuideStep() {
+            if (guideCurrentStep > 1) {
+                guideCurrentStep--;
+                updateGuideContent();
+            }
+        }
+
+        function finishGuide() {
+            localStorage.setItem('guideCompleted', 'true');
+            closeGuide();
+            showToast('🎉 恭喜完成新手引导！', 'success');
+        }
+
+        // 操作提示功能
+        async function loadOperationTips(page) {
+            if (!authToken) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/guide/tips?page=${page}`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const result = await response.json();
+                if (result.code === 200) {
+                    return result.data;
+                }
+            } catch (error) {
+                console.error('加载操作提示失败', error);
+            }
+            return null;
+        }
+
+        function showTip(title, desc, x, y) {
+            const tooltip = document.getElementById('tip-tooltip');
+            tooltip.querySelector('.tip-title').textContent = title;
+            tooltip.querySelector('.tip-desc').textContent = desc;
+            tooltip.style.left = `${x}px`;
+            tooltip.style.top = `${y - 100}px`;
+            tooltip.style.display = 'block';
+            
+            setTimeout(() => {
+                tooltip.style.display = 'none';
+            }, 5000);
+        }
+
+        // 页面切换时显示操作提示
+        document.addEventListener('click', (e) => {
+            const navItem = e.target.closest('.nav-item');
+            if (navItem && authToken) {
+                const pageId = navItem.getAttribute('data-page');
+                if (pageId) {
+                    loadOperationTips(pageId).then(tips => {
+                        if (tips) {
+                            const rect = navItem.getBoundingClientRect();
+                            showTip(tips.title, tips.description, rect.left + rect.width / 2, rect.bottom);
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+
+    <!-- 新手引导弹窗 -->
+    <div id="guide-modal" class="modal guide-modal">
+        <div class="modal-content guide-content">
+            <div class="guide-header">
+                <div class="guide-icon">🌟</div>
+                <h3>新手引导</h3>
+                <span class="close guide-close" onclick="closeGuide()">&times;</span>
+            </div>
+            <div class="guide-body">
+                <div class="guide-progress">
+                    <div class="guide-progress-bar">
+                        <div id="guide-progress-fill" class="guide-progress-fill"></div>
+                    </div>
+                    <span id="guide-step-info" class="guide-step-info">步骤 1/3</span>
+                </div>
+                <div id="guide-content" class="guide-step-content">
+                    <div class="guide-title">欢迎使用AI智能答题系统</div>
+                    <div class="guide-description">这是一个强大的智能答题平台，让AI帮您创建题目并自动批改！</div>
+                    <div class="guide-image">🎯</div>
+                </div>
+            </div>
+            <div class="guide-footer">
+                <button id="guide-prev" class="btn btn-secondary" onclick="prevGuideStep()" style="display:none">上一步</button>
+                <button id="guide-next" class="btn btn-primary" onclick="nextGuideStep()">下一步</button>
+                <button id="guide-finish" class="btn btn-success" onclick="finishGuide()" style="display:none">完成引导</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作提示组件 -->
+    <div id="tip-tooltip" class="tip-tooltip" style="display:none">
+        <div class="tip-arrow"></div>
+        <div class="tip-content">
+            <div class="tip-title"></div>
+            <div class="tip-desc"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="footer-logo-icon">🍟</span>
+                <span class="footer-logo-text">整点薯条7</span>
+            </div>
+            <div class="footer-info">
+                <p>基于AI的智能答题应用创建与管理平台</p>
+                <p class="footer-copyright">© 2026 整点薯条7 版权所有</p>
+            </div>
+            <div class="footer-links">
+                <a href="#" class="footer-link">关于我们</a>
+                <a href="#" class="footer-link">使用帮助</a>
+                <a href="#" class="footer-link">联系支持</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

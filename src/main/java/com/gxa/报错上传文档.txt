@@ -1,0 +1,303 @@
+"C:\Program Files\Java\jdk-17\bin\java.exe" -XX:TieredStopAtLevel=1 -Dspring.output.ansi.enabled=always -Dcom.sun.management.jmxremote -Dspring.jmx.enabled=true -Dspring.liveBeansView.mbeanDomain -Dspring.application.admin.enabled=true "-Dmanagement.endpoints.jmx.exposure.include=*" "-javaagent:D:\idea\IntelliJ IDEA 2022.3.3\lib\idea_rt.jar=54394:D:\idea\IntelliJ IDEA 2022.3.3\bin" -Dfile.encoding=UTF-8 -classpath D:\xiaoluidea\donglingying\AiAgentAnswer\target\classes;C:\Users\86173\.m2\repository\org\springframework\boot\spring-boot-starter-web\2.6.13\spring-boot-starter-web-2.6.13.jar;C:\Users\86173\.m2\repository\org\springframework\boot\spring-boot-starter\2.6.13\spring-boot-starter-2.6.13.jar;C:\Users\86173\.m2\repository\org\springframework\boot\spring-boot\2.6.13\spring-boot-2.6.13.jar;C:\Users\86173\.m2\repository\org\springframework\boot\spring-boot-starter-logging\2.6.13\spring-boot-starter-logging-2.6.13.jar;C:\Users\86173\.m2\repository\ch\qos\logback\logback-classic\1.2.11\logback-classic-1.2.11.jar;C:\Users\86173\.m2\repository\ch\qos\logback\logback-core\1.2.11\logback-core-1.2.11.jar;C:\Users\86173\.m2\repository\org\apache\logging\log4j\log4j-to-slf4j\2.17.2\log4j-to-slf4j-2.17.2.jar;C:\Users\86173\.m2\repository\org\apache\logging\log4j\log4j-api\2.17.2\log4j-api-2.17.2.jar;C:\Users\86173\.m2\repository\org\slf4j\jul-to-slf4j\1.7.36\jul-to-slf4j-1.7.36.jar;C:\Users\86173\.m2\repository\jakarta\annotation\jakarta.annotation-api\1.3.5\jakarta.annotation-api-1.3.5.jar;C:\Users\86173\.m2\repository\org\yaml\snakeyaml\1.29\snakeyaml-1.29.jar;C:\Users\86173\.m2\repository\org\springframework\boot\spring-boot-starter-json\2.6.13\spring-boot-starter-json-2.6.13.jar;C:\Users\86173\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jdk8\2.13.4\jackson-datatype-jdk8-2.13.4.jar;C:\Users\86173\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.13.4\jackson-datatype-jsr310-2.13.4.jar;C:\Users\86173\.m2\repository\com\fasterxml\jackson\module\jackson-module-parameter-names\2.13.4\jackson-module-parameter-names-2.13.4.jar;C:\Users\86173\.m2\repository\org\springframework\boot\spring-boot-starter-tomcat\2.6.13\spring-boot-starter-tomcat-2.6.13.jar;C:\Users\86173\.m2\repository\org\apache\tomcat\embed\tomcat-embed-core\9.0.68\tomcat-embed-core-9.0.68.jar;C:\Users\86173\.m2\repository\org\apache\tomcat\embed\tomcat-embed-websocket\9.0.68\tomcat-embed-websocket-9.0.68.jar;C:\Users\86173\.m2\repository\org\springframework\spring-web\5.3.23\spring-web-5.3.23.jar;C:\Users\86173\.m2\repository\org\springframework\spring-beans\5.3.23\spring-beans-5.3.23.jar;C:\Users\86173\.m2\repository\org\springframework\spring-webmvc\5.3.23\spring-webmvc-5.3.23.jar;C:\Users\86173\.m2\repository\org\springframework\spring-aop\5.3.23\spring-aop-5.3.23.jar;C:\Users\86173\.m2\repository\org\springframework\spring-context\5.3.23\spring-context-5.3.23.jar;C:\Users\86173\.m2\repository\org\springframework\spring-expression\5.3.23\spring-expression-5.3.23.jar;C:\Users\86173\.m2\repository\org\springframework\boot\spring-boot-starter-data-redis\2.6.13\spring-boot-starter-data-redis-2.6.13.jar;C:\Users\86173\.m2\repository\org\springframework\data\spring-data-redis\2.6.9\spring-data-redis-2.6.9.jar;C:\Users\86173\.m2\repository\org\springframework\data\spring-data-keyvalue\2.6.9\spring-data-keyvalue-2.6.9.jar;C:\Users\86173\.m2\repository\org\springframework\data\spring-data-commons\2.6.9\spring-data-commons-2.6.9.jar;C:\Users\86173\.m2\repository\org\springframework\spring-tx\5.3.23\spring-tx-5.3.23.jar;C:\Users\86173\.m2\repository\org\springframework\spring-oxm\5.3.23\spring-oxm-5.3.23.jar;C:\Users\86173\.m2\repository\org\springframework\spring-context-support\5.3.23\spring-context-support-5.3.23.jar;C:\Users\86173\.m2\repository\org\slf4j\slf4j-api\1.7.36\slf4j-api-1.7.36.jar;C:\Users\86173\.m2\repository\io\lettuce\lettuce-core\6.1.10.RELEASE\lettuce-core-6.1.10.RELEASE.jar;C:\Users\86173\.m2\repository\io\netty\netty-common\4.1.84.Final\netty-common-4.1.84.Final.jar;C:\Users\86173\.m2\repository\io\netty\netty-handler\4.1.84.Final\netty-handler-4.1.84.Final.jar;C:\Users\86173\.m2\repository\io\netty\netty-transport-native-unix-common\4.1.84.Final\netty-transport-native-unix-common-4.1.84.Final.jar;C:\Users\86173\.m2\repository\io\netty\netty-transport\4.1.84.Final\netty-transport-4.1.84.Final.jar;C:\Users\86173\.m2\repository\io\projectreactor\reactor-core\3.4.24\reactor-core-3.4.24.jar;C:\Users\86173\.m2\repository\org\mybatis\spring\boot\mybatis-spring-boot-starter\2.2.2\mybatis-spring-boot-starter-2.2.2.jar;C:\Users\86173\.m2\repository\org\springframework\boot\spring-boot-starter-jdbc\2.6.13\spring-boot-starter-jdbc-2.6.13.jar;C:\Users\86173\.m2\repository\com\zaxxer\HikariCP\4.0.3\HikariCP-4.0.3.jar;C:\Users\86173\.m2\repository\org\springframework\spring-jdbc\5.3.23\spring-jdbc-5.3.23.jar;C:\Users\86173\.m2\repository\org\mybatis\spring\boot\mybatis-spring-boot-autoconfigure\2.2.2\mybatis-spring-boot-autoconfigure-2.2.2.jar;C:\Users\86173\.m2\repository\org\mybatis\mybatis\3.5.9\mybatis-3.5.9.jar;C:\Users\86173\.m2\repository\org\mybatis\mybatis-spring\2.0.7\mybatis-spring-2.0.7.jar;C:\Users\86173\.m2\repository\com\baomidou\mybatis-plus-boot-starter\3.5.3.1\mybatis-plus-boot-starter-3.5.3.1.jar;C:\Users\86173\.m2\repository\com\baomidou\mybatis-plus\3.5.3.1\mybatis-plus-3.5.3.1.jar;C:\Users\86173\.m2\repository\org\springframework\boot\spring-boot-autoconfigure\2.6.13\spring-boot-autoconfigure-2.6.13.jar;C:\Users\86173\.m2\repository\com\baomidou\mybatis-plus-extension\3.5.3.1\mybatis-plus-extension-3.5.3.1.jar;C:\Users\86173\.m2\repository\com\baomidou\mybatis-plus-core\3.5.3.1\mybatis-plus-core-3.5.3.1.jar;C:\Users\86173\.m2\repository\com\baomidou\mybatis-plus-annotation\3.5.3.1\mybatis-plus-annotation-3.5.3.1.jar;C:\Users\86173\.m2\repository\com\github\jsqlparser\jsqlparser\4.4\jsqlparser-4.4.jar;C:\Users\86173\.m2\repository\org\redisson\redisson-spring-boot-starter\3.17.7\redisson-spring-boot-starter-3.17.7.jar;C:\Users\86173\.m2\repository\org\springframework\boot\spring-boot-starter-actuator\2.6.13\spring-boot-starter-actuator-2.6.13.jar;C:\Users\86173\.m2\repository\org\springframework\boot\spring-boot-actuator-autoconfigure\2.6.13\spring-boot-actuator-autoconfigure-2.6.13.jar;C:\Users\86173\.m2\repository\org\springframework\boot\spring-boot-actuator\2.6.13\spring-boot-actuator-2.6.13.jar;C:\Users\86173\.m2\repository\io\micrometer\micrometer-core\1.8.11\micrometer-core-1.8.11.jar;C:\Users\86173\.m2\repository\org\hdrhistogram\HdrHistogram\2.1.12\HdrHistogram-2.1.12.jar;C:\Users\86173\.m2\repository\org\latencyutils\LatencyUtils\2.0.3\LatencyUtils-2.0.3.jar;C:\Users\86173\.m2\repository\org\redisson\redisson\3.17.7\redisson-3.17.7.jar;C:\Users\86173\.m2\repository\io\netty\netty-codec\4.1.84.Final\netty-codec-4.1.84.Final.jar;C:\Users\86173\.m2\repository\io\netty\netty-buffer\4.1.84.Final\netty-buffer-4.1.84.Final.jar;C:\Users\86173\.m2\repository\io\netty\netty-resolver\4.1.84.Final\netty-resolver-4.1.84.Final.jar;C:\Users\86173\.m2\repository\io\netty\netty-resolver-dns\4.1.84.Final\netty-resolver-dns-4.1.84.Final.jar;C:\Users\86173\.m2\repository\io\netty\netty-codec-dns\4.1.84.Final\netty-codec-dns-4.1.84.Final.jar;C:\Users\86173\.m2\repository\javax\cache\cache-api\1.1.1\cache-api-1.1.1.jar;C:\Users\86173\.m2\repository\org\reactivestreams\reactive-streams\1.0.4\reactive-streams-1.0.4.jar;C:\Users\86173\.m2\repository\io\reactivex\rxjava3\rxjava\3.1.5\rxjava-3.1.5.jar;C:\Users\86173\.m2\repository\org\jboss\marshalling\jboss-marshalling\2.0.11.Final\jboss-marshalling-2.0.11.Final.jar;C:\Users\86173\.m2\repository\org\jboss\marshalling\jboss-marshalling-river\2.0.11.Final\jboss-marshalling-river-2.0.11.Final.jar;C:\Users\86173\.m2\repository\com\fasterxml\jackson\dataformat\jackson-dataformat-yaml\2.13.4\jackson-dataformat-yaml-2.13.4.jar;C:\Users\86173\.m2\repository\net\bytebuddy\byte-buddy\1.11.22\byte-buddy-1.11.22.jar;C:\Users\86173\.m2\repository\org\jodd\jodd-bean\5.1.6\jodd-bean-5.1.6.jar;C:\Users\86173\.m2\repository\org\jodd\jodd-core\5.1.6\jodd-core-5.1.6.jar;C:\Users\86173\.m2\repository\org\redisson\redisson-spring-data-27\3.17.7\redisson-spring-data-27-3.17.7.jar;C:\Users\86173\.m2\repository\com\mysql\mysql-connector-j\8.0.31\mysql-connector-j-8.0.31.jar;C:\Users\86173\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.13.4.2\jackson-databind-2.13.4.2.jar;C:\Users\86173\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.13.4\jackson-core-2.13.4.jar;C:\Users\86173\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.13.4\jackson-annotations-2.13.4.jar;C:\Users\86173\.m2\repository\org\projectlombok\lombok\1.18.24\lombok-1.18.24.jar;C:\Users\86173\.m2\repository\org\springframework\spring-core\5.3.23\spring-core-5.3.23.jar;C:\Users\86173\.m2\repository\org\springframework\spring-jcl\5.3.23\spring-jcl-5.3.23.jar;C:\Users\86173\.m2\repository\org\springframework\boot\spring-boot-starter-validation\2.6.13\spring-boot-starter-validation-2.6.13.jar;C:\Users\86173\.m2\repository\org\apache\tomcat\embed\tomcat-embed-el\9.0.68\tomcat-embed-el-9.0.68.jar;C:\Users\86173\.m2\repository\org\hibernate\validator\hibernate-validator\6.2.5.Final\hibernate-validator-6.2.5.Final.jar;C:\Users\86173\.m2\repository\jakarta\validation\jakarta.validation-api\2.0.2\jakarta.validation-api-2.0.2.jar;C:\Users\86173\.m2\repository\org\jboss\logging\jboss-logging\3.4.3.Final\jboss-logging-3.4.3.Final.jar;C:\Users\86173\.m2\repository\com\fasterxml\classmate\1.5.1\classmate-1.5.1.jar;C:\Users\86173\.m2\repository\org\springframework\security\spring-security-crypto\5.6.8\spring-security-crypto-5.6.8.jar;C:\Users\86173\.m2\repository\io\jsonwebtoken\jjwt-api\0.11.5\jjwt-api-0.11.5.jar;C:\Users\86173\.m2\repository\io\jsonwebtoken\jjwt-impl\0.11.5\jjwt-impl-0.11.5.jar;C:\Users\86173\.m2\repository\io\jsonwebtoken\jjwt-jackson\0.11.5\jjwt-jackson-0.11.5.jar com.gxa.AiAgentAnswerApplication
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::               (v2.6.13)
+
+2026-01-27 15:13:07 [main] INFO  com.gxa.AiAgentAnswerApplication - Starting AiAgentAnswerApplication using Java 17 on lingxiaolu with PID 28664 (D:\xiaoluidea\donglingying\AiAgentAnswer\target\classes started by 86173 in D:\xiaoluidea\donglingying\AiAgentAnswer)
+2026-01-27 15:13:07 [main] DEBUG com.gxa.AiAgentAnswerApplication - Running with Spring Boot v2.6.13, Spring v5.3.23
+2026-01-27 15:13:07 [main] INFO  com.gxa.AiAgentAnswerApplication - No active profile set, falling back to 1 default profile: "default"
+2026-01-27 15:13:08 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-01-27 15:13:08 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-01-27 15:13:08 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 10 ms. Found 0 Redis repository interfaces.
+2026-01-27 15:13:09 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8085 (http)
+2026-01-27 15:13:09 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-01-27 15:13:09 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+2026-01-27 15:13:09 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-01-27 15:13:09 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1815 ms
+2026-01-27 15:13:09 [main] INFO  org.redisson.Version - Redisson 3.17.7
+2026-01-27 15:13:10 [redisson-netty-2-6] INFO  o.r.c.p.MasterPubSubConnectionPool - 1 connections initialized for localhost/127.0.0.1:6379
+2026-01-27 15:13:10 [redisson-netty-2-20] INFO  o.r.c.pool.MasterConnectionPool - 24 connections initialized for localhost/127.0.0.1:6379
+Logging initialized using 'class org.apache.ibatis.logging.stdout.StdOutImpl' adapter.
+Registered plugin: 'com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor@50672905'
+Property 'mapperLocations' was not specified.
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.5.3.1 
+2026-01-27 15:13:10 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-01-27 15:13:11 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-01-27 15:13:11 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8085 (http) with context path ''
+2026-01-27 15:13:11 [main] INFO  com.gxa.AiAgentAnswerApplication - Started AiAgentAnswerApplication in 4.352 seconds (JVM running for 5.137)
+2026-01-27 15:13:11 [RMI TCP Connection(2)-172.16.115.231] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-01-27 15:13:11 [RMI TCP Connection(2)-172.16.115.231] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-01-27 15:13:23 [http-nio-8085-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-27 15:13:23 [http-nio-8085-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-01-27 15:13:23 [http-nio-8085-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@16699a48] was not registered for synchronization because synchronization is not active
+2026-01-27 15:13:36 [http-nio-8085-exec-9] WARN  c.b.m.c.t.support.ReflectLambdaMeta - Unable to make field private final java.lang.Class java.lang.invoke.SerializedLambda.capturingClass accessible: module java.base does not "opens java.lang.invoke" to unnamed module @49ec71f8
+JDBC Connection [HikariProxyConnection@1125436694 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM t_app WHERE (user_id = ?)
+==> Parameters: 4(Long)
+<==    Columns: total
+<==        Row: 7
+<==      Total: 1
+==>  Preparing: SELECT id,app_id,user_id,title,description,type,cover_image,config_json,status,view_count,answer_count,share_count,is_ai_generated,create_time,update_time FROM t_app WHERE (user_id = ?) ORDER BY create_time DESC LIMIT ?
+==> Parameters: 4(Long), 100(Long)
+<==    Columns: id, app_id, user_id, title, description, type, cover_image, config_json, status, view_count, answer_count, share_count, is_ai_generated, create_time, update_time
+<==        Row: 11, APP1769496605179AA942DC9, 4, 足球, <<BLOB>>, custom, null, <<BLOB>>, 1, 3, 2, 0, 0, 2026-01-27 14:50:05, 2026-01-27 14:50:05
+<==        Row: 10, APP1769492209708A2E2CCEE, 4, 减法, <<BLOB>>, quiz, null, <<BLOB>>, 1, 1, 0, 0, 0, 2026-01-27 13:36:50, 2026-01-27 13:36:50
+<==        Row: 9, APP17694892297097F741B05, 4, 加法, <<BLOB>>, quiz, null, <<BLOB>>, 1, 13, 4, 0, 0, 2026-01-27 12:47:10, 2026-01-27 12:47:10
+<==        Row: 7, APP1769480427732E6E552A0, 4, ai, <<BLOB>>, custom, null, <<BLOB>>, 1, 8, 10, 2, 0, 2026-01-27 10:20:28, 2026-01-27 10:20:28
+<==        Row: 6, APP17694223993056A3B8316, 4, 篮球, <<BLOB>>, custom, null, <<BLOB>>, 1, 15, 15, 5, 0, 2026-01-26 18:13:19, 2026-01-26 18:13:19
+<==        Row: 4, APP176941706958004ED703C, 4, 秋天, <<BLOB>>, custom, null, <<BLOB>>, 1, 8, 7, 1, 0, 2026-01-26 16:44:30, 2026-01-26 16:44:30
+<==        Row: 8, APP1769483877084E61B0AB6, 4, ai, <<BLOB>>, custom, null, <<BLOB>>, 1, 0, 0, 0, 0, null, 2026-01-27 12:47:39
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@16699a48]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@250d5fd7] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@761497826 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: SELECT * FROM t_app WHERE app_id = ?
+==> Parameters: APP1769496605179AA942DC9(String)
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@691111a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1308004499 wrapping com.mysql.cj.jdbc.ConnectionImpl@378ca554] will not be managed by Spring
+==>  Preparing: DELETE FROM t_question WHERE app_id = ?
+==> Parameters: APP1769496605179AA942DC9(String)
+<==    Columns: id, app_id, user_id, title, description, type, cover_image, config_json, status, view_count, answer_count, share_count, is_ai_generated, create_time, update_time
+<==        Row: 11, APP1769496605179AA942DC9, 4, 足球, <<BLOB>>, custom, null, <<BLOB>>, 1, 3, 2, 0, 0, 2026-01-27 14:50:05, 2026-01-27 14:50:05
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@250d5fd7]
+<==    Updates: 10
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@691111a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7cea9c4] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1102662916 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: SELECT * FROM t_question WHERE app_id = ? ORDER BY order_num ASC
+==> Parameters: APP1769496605179AA942DC9(String)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7cea9c4]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c1da62d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@319791651 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: INSERT INTO t_question ( app_id, question_text, question_type, options, correct_answer, score, order_num, create_time, update_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: APP1769496605179AA942DC9(String), 什么是越位？请简要说明其基本规则。(String), text(String), [](String), 越位是指进攻球员在传球瞬间，接球球员比球和倒数第二名对方球员（通常包括守门员）更靠近对方球门线，并且处于比赛区域内。此时该球员处于越位位置，如果其随后参与进攻获利，则判罚越位犯规。(String), 10(Integer), 1(Integer), 2026-01-27T15:14:20.243269800(LocalDateTime), 2026-01-27T15:14:20.245405100(LocalDateTime)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c1da62d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79b8479] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1984839380 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: INSERT INTO t_question ( app_id, question_text, question_type, options, correct_answer, score, order_num, create_time, update_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: APP1769496605179AA942DC9(String), 在足球比赛中，直接任意球和间接任意球的主要区别是什么？(String), text(String), [](String), 直接任意球可以直接射门得分；间接任意球必须经过至少另一名球员触碰后进球才有效，裁判会单臂上举示意为间接任意球。(String), 10(Integer), 2(Integer), 2026-01-27T15:14:20.258490900(LocalDateTime), 2026-01-27T15:14:20.258490900(LocalDateTime)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79b8479]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@553ed8d4] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1384244281 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: INSERT INTO t_question ( app_id, question_text, question_type, options, correct_answer, score, order_num, create_time, update_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: APP1769496605179AA942DC9(String), 解释足球比赛中的“黄牌累计停赛”规则（以典型联赛为例）。(String), text(String), [](String), 在许多联赛中，球员在单赛季联赛中累计获得一定数量的黄牌（例如5张），将自动停赛一场。具体数量因赛事规则而异。(String), 10(Integer), 3(Integer), 2026-01-27T15:14:20.263058700(LocalDateTime), 2026-01-27T15:14:20.263058700(LocalDateTime)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@553ed8d4]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@86bdd74] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@308407522 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: INSERT INTO t_question ( app_id, question_text, question_type, options, correct_answer, score, order_num, create_time, update_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: APP1769496605179AA942DC9(String), 什么是“帽子戏法”？这个术语的起源与足球有何关联？(String), text(String), [](String), 帽子戏法指一名球员在同一场比赛中打进三个进球。该术语起源于板球，后引申至足球，用于表彰球员的突出表现。(String), 10(Integer), 4(Integer), 2026-01-27T15:14:20.269546(LocalDateTime), 2026-01-27T15:14:20.269546(LocalDateTime)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@86bdd74]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@752d18dd] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1748434022 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: INSERT INTO t_question ( app_id, question_text, question_type, options, correct_answer, score, order_num, create_time, update_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: APP1769496605179AA942DC9(String), 简述足球比赛中的“有利进攻”原则（Advantage Rule）及其应用场景。(String), text(String), [](String), 当一方球员犯规，但裁判认为判罚犯规会中断对被犯规方更有利的进攻机会时，裁判可以暂不鸣哨，让比赛继续，以保持进攻的连续性。事后可对犯规球员进行补罚。(String), 10(Integer), 5(Integer), 2026-01-27T15:14:20.274920400(LocalDateTime), 2026-01-27T15:14:20.274920400(LocalDateTime)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@752d18dd]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7a3f2f0] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1408338229 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: INSERT INTO t_question ( app_id, question_text, question_type, options, correct_answer, score, order_num, create_time, update_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: APP1769496605179AA942DC9(String), 足球比赛中的“伤停补时”是如何计算的？主要考虑哪些因素？(String), text(String), [](String), 伤停补时由第四官员根据比赛中各种中断所损失的时间计算，主要考虑因素包括：换人、球员受伤治疗、VAR回看、庆祝进球、故意拖延时间等。主裁判拥有最终决定权。(String), 10(Integer), 6(Integer), 2026-01-27T15:14:20.281363100(LocalDateTime), 2026-01-27T15:14:20.281363100(LocalDateTime)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7a3f2f0]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b55206b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@78819861 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: INSERT INTO t_question ( app_id, question_text, question_type, options, correct_answer, score, order_num, create_time, update_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: APP1769496605179AA942DC9(String), 解释“4-4-2”阵型的特点及其常见的战术分工。(String), text(String), [](String), 4-4-2阵型由四名后卫、四名中场和两名前锋组成。特点为攻守平衡，中场平行站位或菱形站位。两名前锋通常一高一快搭配，四名中场负责攻防转换和边路支援，四后卫负责区域或人盯人防守。(String), 10(Integer), 7(Integer), 2026-01-27T15:14:20.286076900(LocalDateTime), 2026-01-27T15:14:20.286076900(LocalDateTime)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b55206b]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@67c81059] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@492945030 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: INSERT INTO t_question ( app_id, question_text, question_type, options, correct_answer, score, order_num, create_time, update_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: APP1769496605179AA942DC9(String), 什么是“VAR”？它在足球比赛中主要用于哪几类关键判罚的复核？(String), text(String), [](String), VAR是视频助理裁判系统。主要用于复核四类关键事件：进球与否、点球判罚、直接红牌判罚、以及罚错对象（身份识别错误）。(String), 10(Integer), 8(Integer), 2026-01-27T15:14:20.293523700(LocalDateTime), 2026-01-27T15:14:20.293523700(LocalDateTime)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@67c81059]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3c979687] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1576388752 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: INSERT INTO t_question ( app_id, question_text, question_type, options, correct_answer, score, order_num, create_time, update_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: APP1769496605179AA942DC9(String), 在点球大战中，守门员在对方踢球前可以提前移动吗？规则如何规定？(String), text(String), [](String), 守门员必须至少有一只脚的一部分接触球门线，或在球门线上，且不能站在球门线后。在球被踢出前，守门员可以沿球门线左右移动，但不得向前越过球门线。(String), 10(Integer), 9(Integer), 2026-01-27T15:14:20.299730500(LocalDateTime), 2026-01-27T15:14:20.299730500(LocalDateTime)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3c979687]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2bf3c14e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1479618024 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: INSERT INTO t_question ( app_id, question_text, question_type, options, correct_answer, score, order_num, create_time, update_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: APP1769496605179AA942DC9(String), 解释“德比战”在足球中的含义，并举例说明其常见类型。(String), text(String), [](String), 德比战通常指同一城市、地区或具有历史竞争关系的两支球队之间的比赛。常见类型有：同城德比（如曼彻斯特德比）、地区德比（如西班牙国家德比）、历史竞争德比（如英格兰 vs 苏格兰）等。(String), 10(Integer), 10(Integer), 2026-01-27T15:14:20.304943300(LocalDateTime), 2026-01-27T15:14:20.304943300(LocalDateTime)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2bf3c14e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@25e1899] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@652537069 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: INSERT INTO t_ai_generate_log ( app_id, user_id, generate_type, prompt, result, status, create_time ) VALUES ( ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: APP1769496605179AA942DC9(String), 1(Long), question(String), 请为主题"足球"生成10道简答类型的题目，难度为medium。
+要求：
+1. 题目内容清晰易懂
+2. 简答题不需要选项
+3. 简答题需要提供参考答案（correctAnswer）
+4. 请以JSON格式返回，格式如下：
+[
+  {
+    "questionText": "题目内容",
+    "questionType": "text",
+    "options": [],
+    "correctAnswer": "参考答案",
+    "score": 10,
+    "orderNum": 1
+  }
+](String), ```json
+[
+  {
+    "questionText": "什么是越位？请简要说明其基本规则。",
+    "questionType": "text",
+    "options": [],
+    "correctAnswer": "越位是指进攻球员在传球瞬间，接球球员比球和倒数第二名对方球员（通常包括守门员）更靠近对方球门线，并且处于比赛区域内。此时该球员处于越位位置，如果其随后参与进攻获利，则判罚越位犯规。",
+    "score": 10,
+    "orderNum": 1
+  },
+  {
+    "questionText": "在足球比赛中，直接任意球和间接任意球的主要区别是什么？",
+    "questionType": "text",
+    "options": [],
+    "correctAnswer": "直接任意球可以直接射门得分；间接任意球必须经过至少另一名球员触碰后进球才有效，裁判会单臂上举示意为间接任意球。",
+    "score": 10,
+    "orderNum": 2
+  },
+  {
+    "questionText": "解释足球比赛中的“黄牌累计停赛”规则（以典型联赛为例）。",
+    "questionType": "text",
+    "options": [],
+    "correctAnswer": "在许多联赛中，球员在单赛季联赛中累计获得一定数量的黄牌（例如5张），将自动停赛一场。具体数量因赛事规则而异。",
+    "score": 10,
+    "orderNum": 3
+  },
+  {
+    "questionText": "什么是“帽子戏法”？这个术语的起源与足球有何关联？",
+    "questionType": "text",
+    "options": [],
+    "correctAnswer": "帽子戏法指一名球员在同一场比赛中打进三个进球。该术语起源于板球，后引申至足球，用于表彰球员的突出表现。",
+    "score": 10,
+    "orderNum": 4
+  },
+  {
+    "questionText": "简述足球比赛中的“有利进攻”原则（Advantage Rule）及其应用场景。",
+    "questionType": "text",
+    "options": [],
+    "correctAnswer": "当一方球员犯规，但裁判认为判罚犯规会中断对被犯规方更有利的进攻机会时，裁判可以暂不鸣哨，让比赛继续，以保持进攻的连续性。事后可对犯规球员进行补罚。",
+    "score": 10,
+    "orderNum": 5
+  },
+  {
+    "questionText": "足球比赛中的“伤停补时”是如何计算的？主要考虑哪些因素？",
+    "questionType": "text",
+    "options": [],
+    "correctAnswer": "伤停补时由第四官员根据比赛中各种中断所损失的时间计算，主要考虑因素包括：换人、球员受伤治疗、VAR回看、庆祝进球、故意拖延时间等。主裁判拥有最终决定权。",
+    "score": 10,
+    "orderNum": 6
+  },
+  {
+    "questionText": "解释“4-4-2”阵型的特点及其常见的战术分工。",
+    "questionType": "text",
+    "options": [],
+    "correctAnswer": "4-4-2阵型由四名后卫、四名中场和两名前锋组成。特点为攻守平衡，中场平行站位或菱形站位。两名前锋通常一高一快搭配，四名中场负责攻防转换和边路支援，四后卫负责区域或人盯人防守。",
+    "score": 10,
+    "orderNum": 7
+  },
+  {
+    "questionText": "什么是“VAR”？它在足球比赛中主要用于哪几类关键判罚的复核？",
+    "questionType": "text",
+    "options": [],
+    "correctAnswer": "VAR是视频助理裁判系统。主要用于复核四类关键事件：进球与否、点球判罚、直接红牌判罚、以及罚错对象（身份识别错误）。",
+    "score": 10,
+    "orderNum": 8
+  },
+  {
+    "questionText": "在点球大战中，守门员在对方踢球前可以提前移动吗？规则如何规定？",
+    "questionType": "text",
+    "options": [],
+    "correctAnswer": "守门员必须至少有一只脚的一部分接触球门线，或在球门线上，且不能站在球门线后。在球被踢出前，守门员可以沿球门线左右移动，但不得向前越过球门线。",
+    "score": 10,
+    "orderNum": 9
+  },
+  {
+    "questionText": "解释“德比战”在足球中的含义，并举例说明其常见类型。",
+    "questionType": "text",
+    "options": [],
+    "correctAnswer": "德比战通常指同一城市、地区或具有历史竞争关系的两支球队之间的比赛。常见类型有：同城德比（如曼彻斯特德比）、地区德比（如西班牙国家德比）、历史竞争德比（如英格兰 vs 苏格兰）等。",
+    "score": 10,
+    "orderNum": 10
+  }
+]
+```(String), 0(Integer), 2026-01-27T15:14:20.310880200(LocalDateTime)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@25e1899]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@19a9d686]
+JDBC Connection [HikariProxyConnection@1785586543 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will be managed by Spring
+==>  Preparing: SELECT * FROM t_app WHERE app_id = ?
+==> Parameters: APP1769496605179AA942DC9(String)
+<==    Columns: id, app_id, user_id, title, description, type, cover_image, config_json, status, view_count, answer_count, share_count, is_ai_generated, create_time, update_time
+<==        Row: 11, APP1769496605179AA942DC9, 4, 足球, <<BLOB>>, custom, null, <<BLOB>>, 1, 3, 2, 0, 0, 2026-01-27 14:50:05, 2026-01-27 14:50:05
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@19a9d686]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@19a9d686] from current transaction
+==>  Preparing: UPDATE t_app SET app_id=?, user_id=?, title=?, description=?, type=?, status=?, view_count=?, answer_count=?, share_count=?, is_ai_generated=?, create_time=?, update_time=? WHERE id=?
+==> Parameters: APP1769496605179AA942DC9(String), 4(Long), 足球(String), 描述足球(String), custom(String), 1(Integer), 4(Integer), 2(Integer), 0(Integer), 0(Integer), 2026-01-27T14:50:05(LocalDateTime), 2026-01-27T14:50:05(LocalDateTime), 11(Long)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@19a9d686]
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@19a9d686]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@19a9d686]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@19a9d686]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@72b6aa4a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@170176847 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: SELECT * FROM t_app WHERE app_id = ?
+==> Parameters: APP1769496605179AA942DC9(String)
+<==    Columns: id, app_id, user_id, title, description, type, cover_image, config_json, status, view_count, answer_count, share_count, is_ai_generated, create_time, update_time
+<==        Row: 11, APP1769496605179AA942DC9, 4, 足球, <<BLOB>>, custom, null, <<BLOB>>, 1, 4, 2, 0, 0, 2026-01-27 14:50:05, 2026-01-27 14:50:05
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@72b6aa4a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7af837bf] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1017798532 wrapping com.mysql.cj.jdbc.ConnectionImpl@160f1ebf] will not be managed by Spring
+==>  Preparing: SELECT * FROM t_question WHERE app_id = ? ORDER BY order_num ASC
+==> Parameters: APP1769496605179AA942DC9(String)
+<==    Columns: id, app_id, question_text, question_type, options, score, order_num, config_json, create_time, update_time, correct_answer
+<==        Row: 580, APP1769496605179AA942DC9, <<BLOB>>, text, <<BLOB>>, 10, 1, <<BLOB>>, 2026-01-27 15:14:20, 2026-01-27 15:14:20, 越位是指进攻球员在传球瞬间，接球球员比球和倒数第二名对方球员（通常包括守门员）更靠近对方球门线，并且处于比赛区域内。此时该球员处于越位位置，如果其随后参与进攻获利，则判罚越位犯规。
+<==        Row: 581, APP1769496605179AA942DC9, <<BLOB>>, text, <<BLOB>>, 10, 2, <<BLOB>>, 2026-01-27 15:14:20, 2026-01-27 15:14:20, 直接任意球可以直接射门得分；间接任意球必须经过至少另一名球员触碰后进球才有效，裁判会单臂上举示意为间接任意球。
+<==        Row: 582, APP1769496605179AA942DC9, <<BLOB>>, text, <<BLOB>>, 10, 3, <<BLOB>>, 2026-01-27 15:14:20, 2026-01-27 15:14:20, 在许多联赛中，球员在单赛季联赛中累计获得一定数量的黄牌（例如5张），将自动停赛一场。具体数量因赛事规则而异。
+<==        Row: 583, APP1769496605179AA942DC9, <<BLOB>>, text, <<BLOB>>, 10, 4, <<BLOB>>, 2026-01-27 15:14:20, 2026-01-27 15:14:20, 帽子戏法指一名球员在同一场比赛中打进三个进球。该术语起源于板球，后引申至足球，用于表彰球员的突出表现。
+<==        Row: 584, APP1769496605179AA942DC9, <<BLOB>>, text, <<BLOB>>, 10, 5, <<BLOB>>, 2026-01-27 15:14:20, 2026-01-27 15:14:20, 当一方球员犯规，但裁判认为判罚犯规会中断对被犯规方更有利的进攻机会时，裁判可以暂不鸣哨，让比赛继续，以保持进攻的连续性。事后可对犯规球员进行补罚。
+<==        Row: 585, APP1769496605179AA942DC9, <<BLOB>>, text, <<BLOB>>, 10, 6, <<BLOB>>, 2026-01-27 15:14:20, 2026-01-27 15:14:20, 伤停补时由第四官员根据比赛中各种中断所损失的时间计算，主要考虑因素包括：换人、球员受伤治疗、VAR回看、庆祝进球、故意拖延时间等。主裁判拥有最终决定权。
+<==        Row: 586, APP1769496605179AA942DC9, <<BLOB>>, text, <<BLOB>>, 10, 7, <<BLOB>>, 2026-01-27 15:14:20, 2026-01-27 15:14:20, 4-4-2阵型由四名后卫、四名中场和两名前锋组成。特点为攻守平衡，中场平行站位或菱形站位。两名前锋通常一高一快搭配，四名中场负责攻防转换和边路支援，四后卫负责区域或人盯人防守。
+<==        Row: 587, APP1769496605179AA942DC9, <<BLOB>>, text, <<BLOB>>, 10, 8, <<BLOB>>, 2026-01-27 15:14:20, 2026-01-27 15:14:20, VAR是视频助理裁判系统。主要用于复核四类关键事件：进球与否、点球判罚、直接红牌判罚、以及罚错对象（身份识别错误）。
+<==        Row: 588, APP1769496605179AA942DC9, <<BLOB>>, text, <<BLOB>>, 10, 9, <<BLOB>>, 2026-01-27 15:14:20, 2026-01-27 15:14:20, 守门员必须至少有一只脚的一部分接触球门线，或在球门线上，且不能站在球门线后。在球被踢出前，守门员可以沿球门线左右移动，但不得向前越过球门线。
+<==        Row: 589, APP1769496605179AA942DC9, <<BLOB>>, text, <<BLOB>>, 10, 10, <<BLOB>>, 2026-01-27 15:14:20, 2026-01-27 15:14:20, 德比战通常指同一城市、地区或具有历史竞争关系的两支球队之间的比赛。常见类型有：同城德比（如曼彻斯特德比）、地区德比（如西班牙国家德比）、历史竞争德比（如英格兰 vs 苏格兰）等。
+<==      Total: 10
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7af837bf]
