@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zwj.dao.MemberMapper">
+    
+    <resultMap id="MemberResultMap" type="com.zwj.entity.Member">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="clubId" column="club_id"/>
+        <result property="joinTime" column="join_time"/>
+        <result property="role" column="role"/>
+    </resultMap>
+    
+    <select id="findAll" resultMap="MemberResultMap">
+        SELECT * FROM t_member
+    </select>
+    
+    <select id="findById" resultMap="MemberResultMap">
+        SELECT * FROM t_member WHERE id = #{id}
+    </select>
+    
+    <insert id="insert" parameterType="com.zwj.entity.Member" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_member(user_id, club_id, join_time, role)
+        VALUES(#{userId}, #{clubId}, NOW(), #{role})
+    </insert>
+    
+    <update id="update" parameterType="com.zwj.entity.Member">
+        UPDATE t_member SET 
+            user_id = #{userId},
+            club_id = #{clubId},
+            join_time = #{joinTime},
+            role = #{role}
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM t_member WHERE id = #{id}
+    </delete>
+    
+    <select id="findByClubId" resultMap="MemberResultMap">
+        SELECT * FROM t_member WHERE club_id = #{clubId}
+    </select>
+    
+    <select id="findByUserId" resultMap="MemberResultMap">
+        SELECT * FROM t_member WHERE user_id = #{userId}
+    </select>
+    
+</mapper>
