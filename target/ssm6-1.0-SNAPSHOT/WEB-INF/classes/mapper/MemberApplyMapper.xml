@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zwj.dao.MemberApplyMapper">
+    
+    <resultMap id="MemberApplyResultMap" type="com.zwj.entity.MemberApply">
+        <id property="id" column="id"/>
+        <result property="clubId" column="club_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="status" column="status"/>
+        <result property="applyTime" column="apply_time"/>
+    </resultMap>
+    
+    <insert id="insert" parameterType="com.zwj.entity.MemberApply" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_member_apply(club_id, user_id, status, apply_time)
+        VALUES(#{clubId}, #{userId}, #{status}, NOW())
+    </insert>
+    
+    <update id="update" parameterType="com.zwj.entity.MemberApply">
+        UPDATE t_member_apply SET 
+            club_id = #{clubId},
+            user_id = #{userId},
+            status = #{status}
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM t_member_apply WHERE id = #{id}
+    </delete>
+    
+    <select id="findById" resultMap="MemberApplyResultMap">
+        SELECT * FROM t_member_apply WHERE id = #{id}
+    </select>
+    
+    <select id="findByClubId" resultMap="MemberApplyResultMap">
+        SELECT * FROM t_member_apply WHERE club_id = #{clubId}
+    </select>
+    
+    <select id="findByUserId" resultMap="MemberApplyResultMap">
+        SELECT * FROM t_member_apply WHERE user_id = #{userId}
+    </select>
+    
+    <select id="findByClubIdAndUserId" resultMap="MemberApplyResultMap">
+        SELECT * FROM t_member_apply WHERE club_id = #{clubId} AND user_id = #{userId}
+    </select>
+    
+    <select id="findAll" resultMap="MemberApplyResultMap">
+        SELECT * FROM t_member_apply
+    </select>
+    
+</mapper>

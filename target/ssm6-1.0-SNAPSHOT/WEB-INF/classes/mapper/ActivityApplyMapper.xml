@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zwj.dao.ActivityApplyMapper">
+    
+    <resultMap id="ActivityApplyResultMap" type="com.zwj.entity.ActivityApply">
+        <id property="id" column="id"/>
+        <result property="activityId" column="activity_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="status" column="status"/>
+        <result property="applyTime" column="apply_time"/>
+    </resultMap>
+    
+    <insert id="insert" parameterType="com.zwj.entity.ActivityApply" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_activity_apply(activity_id, user_id, status, apply_time)
+        VALUES(#{activityId}, #{userId}, #{status}, NOW())
+    </insert>
+    
+    <update id="update" parameterType="com.zwj.entity.ActivityApply">
+        UPDATE t_activity_apply SET 
+            activity_id = #{activityId},
+            user_id = #{userId},
+            status = #{status}
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM t_activity_apply WHERE id = #{id}
+    </delete>
+    
+    <select id="findById" resultMap="ActivityApplyResultMap">
+        SELECT * FROM t_activity_apply WHERE id = #{id}
+    </select>
+    
+    <select id="findByActivityId" resultMap="ActivityApplyResultMap">
+        SELECT * FROM t_activity_apply WHERE activity_id = #{activityId}
+    </select>
+    
+    <select id="findByUserId" resultMap="ActivityApplyResultMap">
+        SELECT * FROM t_activity_apply WHERE user_id = #{userId}
+    </select>
+    
+    <select id="findByActivityIdAndUserId" resultMap="ActivityApplyResultMap">
+        SELECT * FROM t_activity_apply WHERE activity_id = #{activityId} AND user_id = #{userId}
+    </select>
+    
+    <select id="findAll" resultMap="ActivityApplyResultMap">
+        SELECT * FROM t_activity_apply
+    </select>
+    
+</mapper>

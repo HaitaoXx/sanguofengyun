@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zwj.dao.ClubMapper">
+    
+    <resultMap id="ClubResultMap" type="com.zwj.entity.Club">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="intro" column="intro"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+    
+    <select id="findAll" resultMap="ClubResultMap">
+        SELECT * FROM t_club ORDER BY create_time DESC
+    </select>
+    
+    <select id="findById" resultMap="ClubResultMap">
+        SELECT * FROM t_club WHERE id = #{id}
+    </select>
+    
+    <insert id="insert" parameterType="com.zwj.entity.Club" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_club(name, intro, create_time)
+        VALUES(#{name}, #{intro}, NOW())
+    </insert>
+    
+    <update id="update" parameterType="com.zwj.entity.Club">
+        UPDATE t_club SET 
+            name = #{name},
+            intro = #{intro}
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM t_club WHERE id = #{id}
+    </delete>
+    
+    <select id="findByUserId" resultMap="ClubResultMap">
+        SELECT c.* FROM t_club c 
+        JOIN t_member m ON c.id = m.club_id 
+        WHERE m.user_id = #{userId}
+    </select>
+    
+</mapper>
