@@ -31,38 +31,32 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     public int getUserCount() {
-        List<?> users = userMapper.findAll();
-        return users != null ? users.size() : 0;
+        return userMapper.count();
     }
 
     @Override
     public int getClubCount() {
-        List<?> clubs = clubMapper.findAll();
-        return clubs != null ? clubs.size() : 0;
+        return clubMapper.count();
     }
 
     @Override
     public int getActivityCount() {
-        List<?> activities = activityMapper.findAll();
-        return activities != null ? activities.size() : 0;
+        return activityMapper.count();
     }
 
     @Override
     public int getMemberCount() {
-        List<?> members = memberMapper.findAll();
-        return members != null ? members.size() : 0;
+        return memberMapper.count();
     }
 
     @Override
     public int getActivityApplyCount() {
-        List<?> applies = activityApplyMapper.findAll();
-        return applies != null ? applies.size() : 0;
+        return activityApplyMapper.count();
     }
 
     @Override
     public int getMemberApplyCount() {
-        List<?> applies = memberApplyMapper.findAll();
-        return applies != null ? applies.size() : 0;
+        return memberApplyMapper.count();
     }
 
     @Override

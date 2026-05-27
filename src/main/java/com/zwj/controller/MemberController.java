@@ -4,6 +4,7 @@ import com.zwj.entity.Club;
 import com.zwj.entity.Member;
 import com.zwj.entity.User;
 import com.zwj.service.ClubService;
+import com.zwj.service.MemberApplyService;
 import com.zwj.service.MemberService;
 import com.zwj.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class MemberController {
     private UserService userService;
     @Autowired
     private ClubService clubService;
+    @Autowired
+    private MemberApplyService memberApplyService;
 
     @GetMapping("/list")
     public String list(Model model) {
@@ -81,14 +84,14 @@ public class MemberController {
     }
 
     @PostMapping("/apply")
-    public String apply(Integer clubId, HttpSession session) {
+    public String apply(Integer clubId, HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
-        Member member = new Member();
-        member.setUserId(user.getId());
-        member.setClubId(clubId);
-        member.setRole("成员");
-        memberService.save(member);
-        return "redirect:/member/my";
+        if (memberApplyService.hasApplied(clubId, user.getId())) {
+            model.addAttribute("error", "您已经申请加入该社团");
+            return "redirect:/club/list";
+        }
+        memberApplyService.apply(clubId, user.getId());
+        return "redirect:/memberApply/myApplies";
     }
 
     @GetMapping("/my")

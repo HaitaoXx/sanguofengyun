@@ -49,4 +49,8 @@
         SELECT * FROM t_member_apply
     </select>
     
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM t_member_apply
+    </select>
+    
 </mapper>

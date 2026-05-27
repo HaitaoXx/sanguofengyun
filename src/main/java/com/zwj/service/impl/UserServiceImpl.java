@@ -5,6 +5,7 @@ import com.zwj.entity.User;
 import com.zwj.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void save(User user) {
         if (user.getId() == null) {
             userMapper.insert(user);
@@ -43,11 +45,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void update(User user) {
         userMapper.update(user);
     }
 
     @Override
+    @Transactional
     public void delete(Integer id) {
         userMapper.delete(id);
     }

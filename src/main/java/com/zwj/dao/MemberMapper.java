@@ -13,4 +13,5 @@ public interface MemberMapper {
     void delete(Integer id);
     List<Member> findByClubId(@Param("clubId") Integer clubId);
     List<Member> findByUserId(@Param("userId") Integer userId);
+    int count();
 }

@@ -12,4 +12,5 @@ public interface ClubMapper {
     void update(Club club);
     void delete(Integer id);
     List<Club> findByUserId(@Param("userId") Integer userId);
+    int count();
 }

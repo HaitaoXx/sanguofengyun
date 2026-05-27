@@ -5,6 +5,7 @@ import com.zwj.entity.Club;
 import com.zwj.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
+    @Transactional
     public void save(Club club) {
         if (club.getId() == null) {
             clubMapper.insert(club);
@@ -33,11 +35,13 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
+    @Transactional
     public void update(Club club) {
         clubMapper.update(club);
     }
 
     @Override
+    @Transactional
     public void delete(Integer id) {
         clubMapper.delete(id);
     }
