@@ -5,6 +5,7 @@ import com.zwj.entity.Activity;
 import com.zwj.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    @Transactional
     public void save(Activity activity) {
         if (activity.getId() == null) {
             activityMapper.insert(activity);
@@ -43,11 +45,13 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    @Transactional
     public void update(Activity activity) {
         activityMapper.update(activity);
     }
 
     @Override
+    @Transactional
     public void delete(Integer id) {
         activityMapper.delete(id);
     }

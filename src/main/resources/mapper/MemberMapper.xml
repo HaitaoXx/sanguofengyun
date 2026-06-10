@@ -46,4 +46,8 @@
         SELECT * FROM t_member WHERE user_id = #{userId}
     </select>
     
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM t_member
+    </select>
+    
 </mapper>

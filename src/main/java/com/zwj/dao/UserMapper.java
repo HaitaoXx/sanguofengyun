@@ -14,6 +14,7 @@ public interface UserMapper {
     void update(User user);
     void delete(Integer id);
     List<User> findByClubId(Integer clubId);
-User findByUsername(String username);
+    User findByUsername(String username);
     int countByRole(String role);
+    int count();
 }

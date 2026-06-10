@@ -14,4 +14,5 @@ public interface ActivityApplyMapper {
     List<ActivityApply> findByUserId(Integer userId);
     ActivityApply findByActivityIdAndUserId(@Param("activityId") Integer activityId, @Param("userId") Integer userId);
     List<ActivityApply> findAll();
+    int count();
 }

@@ -13,6 +13,7 @@ public interface ActivityMapper {
     void insert(Activity activity);
     void update(Activity activity);
     void delete(Integer id);
+    int count();
     List<java.util.Map<String, Object>> countByClub();
     List<java.util.Map<String, Object>> countByMonth();
 }

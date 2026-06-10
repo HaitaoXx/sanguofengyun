@@ -5,6 +5,7 @@ import com.zwj.entity.ActivityApply;
 import com.zwj.service.ActivityApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class ActivityApplyServiceImpl implements ActivityApplyService {
     private ActivityApplyMapper activityApplyMapper;
 
     @Override
+    @Transactional
     public void apply(Integer activityId, Integer userId) {
         ActivityApply apply = new ActivityApply();
         apply.setActivityId(activityId);
@@ -23,6 +25,7 @@ public class ActivityApplyServiceImpl implements ActivityApplyService {
     }
 
     @Override
+    @Transactional
     public void updateStatus(Integer id, String status) {
         ActivityApply apply = activityApplyMapper.findById(id);
         if (apply != null) {
@@ -32,6 +35,7 @@ public class ActivityApplyServiceImpl implements ActivityApplyService {
     }
 
     @Override
+    @Transactional
     public void delete(Integer id) {
         activityApplyMapper.delete(id);
     }

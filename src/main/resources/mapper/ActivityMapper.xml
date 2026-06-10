@@ -58,6 +58,10 @@
         DELETE FROM t_activity WHERE id = #{id}
     </delete>
     
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM t_activity
+    </select>
+    
     <select id="countByClub" resultType="map">
         SELECT c.name as club_name, COUNT(a.id) as count
         FROM t_activity a

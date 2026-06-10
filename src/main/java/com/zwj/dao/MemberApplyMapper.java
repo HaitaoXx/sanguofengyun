@@ -14,4 +14,5 @@ public interface MemberApplyMapper {
     List<MemberApply> findByUserId(Integer userId);
     MemberApply findByClubIdAndUserId(@Param("clubId") Integer clubId, @Param("userId") Integer userId);
     List<MemberApply> findAll();
+    int count();
 }

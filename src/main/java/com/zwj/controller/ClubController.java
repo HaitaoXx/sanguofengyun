@@ -88,16 +88,6 @@ public class ClubController {
         return "club/my";
     }
 
-    @GetMapping("/myClub")
-    public String myClub2(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user.getClubId() != null) {
-            Club club = clubService.findById(user.getClubId());
-            model.addAttribute("club", club);
-        }
-        return "club/my";
-    }
-
     @GetMapping("/myClubs")
     public String myClubs(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");

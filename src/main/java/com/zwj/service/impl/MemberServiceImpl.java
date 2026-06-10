@@ -5,6 +5,7 @@ import com.zwj.entity.Member;
 import com.zwj.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void save(Member member) {
         if (member.getId() == null) {
             memberMapper.insert(member);
@@ -33,11 +35,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void update(Member member) {
         memberMapper.update(member);
     }
 
     @Override
+    @Transactional
     public void delete(Integer id) {
         memberMapper.delete(id);
     }
