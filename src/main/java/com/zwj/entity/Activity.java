@@ -73,24 +73,8 @@ public class Activity {
     public String getCreateTime() {
         return createTime;
     }
-    
+
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
-    }
-    
-    public String getName() {
-        return title;
-    }
-    
-    public void setName(String name) {
-        this.title = name;
-    }
-    
-    public String getDescription() {
-        return content;
-    }
-    
-    public void setDescription(String description) {
-        this.content = description;
     }
 }
